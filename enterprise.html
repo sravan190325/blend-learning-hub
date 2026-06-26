@@ -950,38 +950,24 @@ function getProgress(id){return progress[id]||{completed:false,stepsDone:[]};}
 
 /* ─── MODE ─── */
 function handleModePillClick(){
-  if(adminMode){toggleAdminMode();return;}
-  if(editorMode){exitEditorMode();return;}
-  const pw=prompt('Enter admin password:');
-  if(pw===null)return;
-  if(pw==='blend360'){adminMode=true;editorMode=false;save();applyModeUI();showToast('Admin mode enabled');}
-  else if(pw!==''){showToast('Incorrect password');}
+  // Role is set at login, mode pill is read-only indicator
 }
-function toggleAdminMode(){adminMode=!adminMode;if(adminMode)editorMode=false;save();applyModeUI();showToast(adminMode?'Admin mode enabled':'Admin mode disabled');}
+function toggleAdminMode(){adminMode=!adminMode;if(adminMode)editorMode=false;save();applyModeUI();}
 function applyModeUI(){
   const pill=document.getElementById('mode-pill'),lbl=document.getElementById('mode-label');
   const addBtn=document.getElementById('add-module-btn'),accessBtn=document.getElementById('access-mgmt-btn');
   const banner=document.getElementById('editor-banner'),body=document.body;
   body.classList.remove('admin-mode','editor-mode');
-  if(adminMode){
-    pill.className='mode-pill admin';lbl.textContent='Admin On';
-    addBtn.style.display='flex';accessBtn.style.display='flex';
+  const role = 'admin'; // no auth — everyone has edit rights
+  if(role==='admin'){
+    pill.className='mode-pill admin';lbl.textContent='Admin';
+    addBtn.style.display='flex';if(accessBtn)accessBtn.style.display='none';
     banner.classList.remove('show');body.classList.add('admin-mode');
-    document.getElementById('user-avatar').textContent='AD';
-    document.getElementById('user-name').textContent='Admin';
-  }else if(editorMode){
-    pill.className='mode-pill editor';lbl.textContent='Editor Mode';
-    addBtn.style.display='none';accessBtn.style.display='none';
-    banner.classList.add('show');body.classList.add('editor-mode');
-    const ini=editorName.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'ED';
+  }
+  if(USER){
+    const ini=USER.name.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'U';
     document.getElementById('user-avatar').textContent=ini;
-    document.getElementById('user-name').textContent=editorName;
-  }else{
-    pill.className='mode-pill';lbl.textContent='Admin';
-    addBtn.style.display='none';accessBtn.style.display='none';
-    banner.classList.remove('show');
-    document.getElementById('user-avatar').textContent='PM';
-    document.getElementById('user-name').textContent='AI PM';
+    document.getElementById('user-name').textContent=USER.name;
   }
 }
 function exitEditorMode(){editorMode=false;editorName='';save();applyModeUI();render();showToast('Exited editor mode');}
