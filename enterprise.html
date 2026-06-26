@@ -950,11 +950,14 @@ function getProgress(id){return progress[id]||{completed:false,stepsDone:[]};}
 
 /* ─── MODE ─── */
 function handleModePillClick(){
-  if(adminMode) toggleAdminMode();
-  else if(editorMode) exitEditorMode();
-  else openCodeEntryModal();
+  if(adminMode){toggleAdminMode();return;}
+  if(editorMode){exitEditorMode();return;}
+  const pw=prompt('Enter admin password:');
+  if(pw===null)return;
+  if(pw==='blend360'){adminMode=true;editorMode=false;save();applyModeUI();showToast('Admin mode enabled');}
+  else if(pw!==''){showToast('Incorrect password');}
 }
-function toggleAdminMode(){adminMode=!adminMode;if(adminMode)editorMode=false;save();applyModeUI();}
+function toggleAdminMode(){adminMode=!adminMode;if(adminMode)editorMode=false;save();applyModeUI();showToast(adminMode?'Admin mode enabled':'Admin mode disabled');}
 function applyModeUI(){
   const pill=document.getElementById('mode-pill'),lbl=document.getElementById('mode-label');
   const addBtn=document.getElementById('add-module-btn'),accessBtn=document.getElementById('access-mgmt-btn');
