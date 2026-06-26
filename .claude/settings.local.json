@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(copy \"C:\\\\Users\\\\SravanAlla\\\\OneDrive - Blend 360\\\\Desktop\\\\AI Learing for PM\\\\AI Learing Website\\\\blend-learning_Latest\\\\enterprise.html\" \"C:\\\\Users\\\\SravanAlla\\\\Downloads\\\\blend-learning-with-render\\\\blend-simple\\\\enterprise.html\")",
+      "Bash(gh pr *)",
+      "Bash(curl -s --max-time 15 https://blend-learning-hub.onrender.com/api/health)",
+      "Bash(curl -s --max-time 15 https://blend-learning-hub.onrender.com/enterprise.html)"
+    ]
+  }
+}
