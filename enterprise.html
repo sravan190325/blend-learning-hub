@@ -318,24 +318,6 @@ header{background:var(--w);border-bottom:1px solid var(--lt);padding:0.85rem 2.5
   .form-row{grid-template-columns:1fr}
   .editor-banner{padding:0.5rem 1rem}
 }
-
-/* LOGIN MODAL */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.logout-btn{background:none;border:1px solid var(--lt);border-radius:4px;padding:0.22rem 0.6rem;font-size:0.68rem;color:var(--cg);cursor:pointer;font-family:var(--font);transition:background 150ms}
-.logout-btn:hover{background:var(--ow)}
 </style>
 </head>
 <body>
@@ -358,14 +340,13 @@ header{background:var(--w);border-bottom:1px solid var(--lt);padding:0.85rem 2.5
     <div class="xp-badge"><span class="xp-dot"></span><span id="total-xp">0 XP</span></div>
     <button class="mode-pill" id="mode-pill" onclick="handleModePillClick()"><span class="pill-dot"></span><span id="mode-label">Admin</span></button>
     <div class="user-chip"><div class="avatar" id="user-avatar">PM</div><span id="user-name">AI PM</span></div>
-    <button class="logout-btn" onclick="changeName()">Change name</button>
   </div>
 </header>
 
 <!-- EDITOR BANNER -->
 <div class="editor-banner" id="editor-banner">
   <span class="editor-banner-text">✏️ You have <strong>Editor</strong> access — you can update lesson content, videos, and materials. Module structure is managed by Admin.</span>
-  <button class="editor-exit" onclick="changeName()">Change name</button>
+  <button class="editor-exit" onclick="exitEditorMode()">Exit editor mode</button>
 </div>
 
 <!-- HERO -->
@@ -398,6 +379,7 @@ header{background:var(--w);border-bottom:1px solid var(--lt);padding:0.85rem 2.5
   <div class="sec-header">
     <span class="sec-title">Learning Modules</span>
     <div class="sec-actions">
+      <button class="access-btn" id="access-mgmt-btn" style="display:none" onclick="openAccessModal()">🔑 Manage Access</button>
       <button class="add-btn" id="add-module-btn" style="display:none" onclick="openAddModal()">+ Add Module</button>
     </div>
   </div>
@@ -405,6 +387,53 @@ header{background:var(--w);border-bottom:1px solid var(--lt);padding:0.85rem 2.5
 </main>
 
 <!-- ══ ACCESS MANAGEMENT MODAL ══ -->
+<div class="modal-overlay" id="access-modal">
+  <div class="modal access-modal" role="dialog" aria-modal="true" aria-labelledby="access-heading">
+    <div class="modal-header">
+      <div><h2 class="modal-title" id="access-heading">Manage Editor Access</h2><p class="modal-subtitle">Generate one-time codes for Blend employees to edit lesson content</p></div>
+      <button class="modal-close" onclick="closeAccessModal()" aria-label="Close">✕</button>
+    </div>
+    <div class="access-tabs">
+      <button class="access-tab active" onclick="switchAccessTab('generate',this)">Generate Code</button>
+      <button class="access-tab" onclick="switchAccessTab('active',this)">Active Access</button>
+      <button class="access-tab" onclick="switchAccessTab('history',this)">Code History</button>
+    </div>
+    <div class="access-pane active" id="pane-generate">
+      <div class="gen-form">
+        <div class="gen-form-title">Issue access to a Blend employee</div>
+        <div class="form-row">
+          <div class="form-field" style="margin-bottom:0"><label class="form-label" for="acc-name">Employee name</label><input type="text" id="acc-name" class="form-input" placeholder="e.g. Sarah Ahmed"></div>
+          <div class="form-field" style="margin-bottom:0"><label class="form-label" for="acc-expires">Expires after</label><select id="acc-expires" class="form-select"><option value="1">1 use (one-time)</option><option value="5">5 uses</option><option value="0">Unlimited uses</option></select></div>
+        </div>
+      </div>
+      <button class="btn-green" style="width:100%;margin-bottom:1.25rem" onclick="generateCode()">Generate Access Code</button>
+      <div id="generated-code-area"></div>
+      <p class="form-hint">Share the code privately. The employee enters it on this page to unlock editor mode on their device.</p>
+    </div>
+    <div class="access-pane" id="pane-active"><div id="active-list"></div></div>
+    <div class="access-pane" id="pane-history"><div id="history-list"></div></div>
+  </div>
+</div>
+
+<!-- ══ EMPLOYEE CODE ENTRY MODAL ══ -->
+<div class="modal-overlay" id="code-entry-modal">
+  <div class="modal modal-sm" role="dialog" aria-modal="true" aria-labelledby="code-entry-heading">
+    <div class="modal-header">
+      <div><h2 class="modal-title" id="code-entry-heading">Enter Access Code</h2><p class="modal-subtitle">Enter the code shared by your Admin to unlock editor access</p></div>
+      <button class="modal-close" onclick="closeCodeEntryModal()" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-field">
+        <label class="form-label" for="code-input">Access code</label>
+        <input type="text" id="code-input" class="form-input" placeholder="e.g. BLN-4X9K" maxlength="10" style="letter-spacing:0.12em;text-transform:uppercase;font-size:1rem">
+        <div class="code-error" id="code-error">Invalid or already used code. Please check with your Admin.</div>
+      </div>
+      <div class="form-field"><label class="form-label" for="code-name-input">Your name</label><input type="text" id="code-name-input" class="form-input" placeholder="Your full name"></div>
+    </div>
+    <div class="modal-footer"><div></div><div class="modal-footer-right"><button class="btn-cancel" onclick="closeCodeEntryModal()">Cancel</button><button class="btn-green" onclick="submitAccessCode()">Unlock Editor Access</button></div></div>
+  </div>
+</div>
+
 <!-- ══ ADD / EDIT MODULE MODAL ══ -->
 <div class="modal-overlay" id="add-modal">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-heading">
@@ -483,13 +512,14 @@ header{background:var(--w);border-bottom:1px solid var(--lt);padding:0.85rem 2.5
 
 <div class="toast" id="toast"></div>
 
-<script src="app.js"></script>
-
 <script>
-const TRACK='enterprise';
+const MK='blend_lrn_enterprise_modules',PK='blend_lrn_enterprise_progress';
+const ACK='blend_aipm_access_codes',AEK='blend_aipm_access_employees',AMK='blend_aipm_admin';
+const EDITOR_KEY='blend_aipm_editor_session';
 
-let modules=[],progress={};
+let modules=[],progress={},adminMode=false,editorMode=false,editorName='';
 let currentModuleId=null,editingId=null,pendingDeleteId=null,stepCounter=0;
+let accessCodes=[],activeEmployees=[];
 
 /* ─── MATERIAL TYPE CONFIG ─── */
 const MAT_TYPES=[
@@ -885,54 +915,139 @@ const DEFAULT_MODULES=[
 
 ];
 
-async function load(){
+function load(){
   try{
-    modules=await apiFetch('/api/modules/enterprise');
+    const m=localStorage.getItem(MK),p=localStorage.getItem(PK);
+    const ac=localStorage.getItem(ACK),ae=localStorage.getItem(AEK);
+    const am=localStorage.getItem(AMK),ed=localStorage.getItem(EDITOR_KEY);
+    modules=m?JSON.parse(m):JSON.parse(JSON.stringify(DEFAULT_MODULES));
+    // migrate old steps (string-only or missing materials)
     modules.forEach(mod=>{
       mod.steps=mod.steps.map(s=>{
         if(typeof s==='string') return{title:s,video:'',materials:[]};
         return{...s,materials:s.materials||[]};
       });
     });
-    progress=await apiFetch('/api/progress/enterprise');
-  }catch(e){modules=[];progress={};}
+    progress=p?JSON.parse(p):{};
+    accessCodes=ac?JSON.parse(ac):[];
+    activeEmployees=ae?JSON.parse(ae):[];
+    adminMode=am==='1';
+    if(ed){const sess=JSON.parse(ed);editorMode=true;editorName=sess.name||'Editor';}
+  }catch(e){modules=JSON.parse(JSON.stringify(DEFAULT_MODULES));progress={};}
 }
-function saveProgress(){
-  apiFetch('/api/progress/enterprise',{method:'PUT',body:JSON.stringify(progress)}).catch(()=>{});
-}
-function saveModules(){
-  apiFetch('/api/modules/enterprise',{method:'PUT',body:JSON.stringify(modules)}).catch(()=>{});
+function save(){
+  try{
+    localStorage.setItem(MK,JSON.stringify(modules));
+    localStorage.setItem(PK,JSON.stringify(progress));
+    localStorage.setItem(ACK,JSON.stringify(accessCodes));
+    localStorage.setItem(AEK,JSON.stringify(activeEmployees));
+    localStorage.setItem(AMK,adminMode?'1':'0');
+    if(editorMode) localStorage.setItem(EDITOR_KEY,JSON.stringify({name:editorName,ts:Date.now()}));
+    else localStorage.removeItem(EDITOR_KEY);
+  }catch(e){}
 }
 function getProgress(id){return progress[id]||{completed:false,stepsDone:[]};}
 
 /* ─── MODE ─── */
 function handleModePillClick(){
-  // Role is set at login, mode pill is read-only indicator
+  if(adminMode) toggleAdminMode();
+  else if(editorMode) exitEditorMode();
+  else openCodeEntryModal();
 }
+function toggleAdminMode(){adminMode=!adminMode;if(adminMode)editorMode=false;save();applyModeUI();}
 function applyModeUI(){
   const pill=document.getElementById('mode-pill'),lbl=document.getElementById('mode-label');
   const addBtn=document.getElementById('add-module-btn'),accessBtn=document.getElementById('access-mgmt-btn');
   const banner=document.getElementById('editor-banner'),body=document.body;
   body.classList.remove('admin-mode','editor-mode');
-  const role = 'admin'; // no auth — everyone has edit rights
-  if(role==='admin'){
-    pill.className='mode-pill admin';lbl.textContent='Admin';
+  if(adminMode){
+    pill.className='mode-pill admin';lbl.textContent='Admin On';
     addBtn.style.display='flex';accessBtn.style.display='flex';
     banner.classList.remove('show');body.classList.add('admin-mode');
-  }else if(role==='editor'){
-    pill.className='mode-pill editor';lbl.textContent='Editor';
+    document.getElementById('user-avatar').textContent='AD';
+    document.getElementById('user-name').textContent='Admin';
+  }else if(editorMode){
+    pill.className='mode-pill editor';lbl.textContent='Editor Mode';
     addBtn.style.display='none';accessBtn.style.display='none';
     banner.classList.add('show');body.classList.add('editor-mode');
+    const ini=editorName.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'ED';
+    document.getElementById('user-avatar').textContent=ini;
+    document.getElementById('user-name').textContent=editorName;
   }else{
-    pill.className='mode-pill';lbl.textContent='Viewer';
+    pill.className='mode-pill';lbl.textContent='Admin';
     addBtn.style.display='none';accessBtn.style.display='none';
     banner.classList.remove('show');
+    document.getElementById('user-avatar').textContent='PM';
+    document.getElementById('user-name').textContent='AI PM';
   }
-  if(USER){
-    const ini=USER.name.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'U';
-    document.getElementById('user-avatar').textContent=ini;
-    document.getElementById('user-name').textContent=USER.name;
-  }
+}
+function exitEditorMode(){editorMode=false;editorName='';save();applyModeUI();render();showToast('Exited editor mode');}
+
+/* ─── ACCESS CODES ─── */
+function generateCode(){
+  const name=document.getElementById('acc-name').value.trim();
+  if(!name){showToast('Enter an employee name first');return;}
+  const expiry=parseInt(document.getElementById('acc-expires').value);
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code='BLN-';for(let i=0;i<4;i++) code+=chars[Math.floor(Math.random()*chars.length)];
+  accessCodes.push({code,name,expiry,usesLeft:expiry===0?Infinity:expiry,createdAt:Date.now(),used:false});
+  save();
+  document.getElementById('generated-code-area').innerHTML=`
+    <div class="code-card">
+      <div class="code-card-left">
+        <div class="code-card-name">Access code for ${escHtml(name)}</div>
+        <div class="code-card-value">${code}</div>
+        <div class="code-card-meta">Created ${new Date().toLocaleDateString()} · ${expiry===0?'Unlimited uses':expiry===1?'One-time use':expiry+' uses'}</div>
+        <span class="code-tag tag-active">Active</span>
+      </div>
+      <button class="copy-btn" onclick="copyCode('${code}')">Copy code</button>
+    </div>`;
+  document.getElementById('acc-name').value='';
+  renderAccessLists();showToast('Code generated for '+name);
+}
+function copyCode(code){navigator.clipboard.writeText(code).then(()=>showToast('Code copied')).catch(()=>showToast('Code: '+code));}
+function revokeCode(code){
+  const idx=accessCodes.findIndex(c=>c.code===code);if(idx>-1)accessCodes[idx].revoked=true;
+  activeEmployees=activeEmployees.filter(e=>e.code!==code);
+  save();renderAccessLists();showToast('Access revoked');
+}
+function renderAccessLists(){
+  const active=activeEmployees.filter(e=>!accessCodes.find(c=>c.code===e.code&&c.revoked));
+  document.getElementById('active-list').innerHTML=active.length
+    ?active.map(e=>`<div class="access-entry"><div><div class="entry-name">${escHtml(e.name)}</div><div class="entry-meta">Code ${e.code} · Active since ${new Date(e.activatedAt).toLocaleDateString()}</div></div><div class="entry-right"><span style="font-size:0.7rem;color:#1a6b3a;background:#e8f8ef;padding:0.15rem 0.45rem;border-radius:3px">Editor</span><button class="revoke-btn" onclick="revokeCode('${e.code}')">Revoke</button></div></div>`).join('')
+    :'<div class="access-empty">No active editor sessions yet.<br>Generate a code and share it with a Blend employee.</div>';
+  document.getElementById('history-list').innerHTML=accessCodes.length
+    ?[...accessCodes].reverse().map(c=>{
+        const rv=c.revoked,us=c.usesLeft!==undefined&&c.usesLeft<=0&&c.expiry!==0;
+        const tag=rv?'<span class="code-tag tag-expired">Revoked</span>':us?'<span class="code-tag tag-used">Fully used</span>':'<span class="code-tag tag-active">Active</span>';
+        return`<div class="code-card ${rv||us?'used':''}"><div class="code-card-left"><div class="code-card-name">${escHtml(c.name)}</div><div class="code-card-value" style="font-size:1.1rem">${c.code}</div><div class="code-card-meta">${new Date(c.createdAt).toLocaleDateString()} · ${c.expiry===0?'Unlimited':c.expiry===1?'One-time':c.expiry+' uses'}</div>${tag}</div>${!rv&&!us?`<button class="copy-btn" onclick="copyCode('${c.code}')">Copy</button>`:''}</div>`;
+      }).join('')
+    :'<div class="access-empty">No codes generated yet.</div>';
+}
+function openCodeEntryModal(){document.getElementById('code-entry-modal').classList.add('open');document.getElementById('code-input').value='';document.getElementById('code-name-input').value='';document.getElementById('code-error').classList.remove('show');}
+function closeCodeEntryModal(){document.getElementById('code-entry-modal').classList.remove('open');}
+function submitAccessCode(){
+  const raw=document.getElementById('code-input').value.trim().toUpperCase();
+  const name=document.getElementById('code-name-input').value.trim();
+  const errEl=document.getElementById('code-error');errEl.classList.remove('show');
+  if(!raw||!name){errEl.textContent='Please enter both the code and your name.';errEl.classList.add('show');return;}
+  const entry=accessCodes.find(c=>c.code===raw&&!c.revoked);
+  if(!entry){errEl.textContent='Invalid or already used code. Please check with your Admin.';errEl.classList.add('show');return;}
+  if(entry.expiry!==0&&entry.usesLeft<=0){errEl.textContent='This code has already been fully used.';errEl.classList.add('show');return;}
+  if(entry.expiry!==0) entry.usesLeft=Math.max(0,(entry.usesLeft||entry.expiry)-1);
+  const existing=activeEmployees.findIndex(e=>e.name===name);
+  const record={name,code:raw,activatedAt:Date.now()};
+  if(existing>-1) activeEmployees[existing]=record; else activeEmployees.push(record);
+  editorMode=true;editorName=name;adminMode=false;
+  save();applyModeUI();render();closeCodeEntryModal();showToast('Welcome '+name+'! Editor access granted.');
+}
+function openAccessModal(){renderAccessLists();document.getElementById('access-modal').classList.add('open');}
+function closeAccessModal(){document.getElementById('access-modal').classList.remove('open');}
+function switchAccessTab(pane,btn){
+  document.querySelectorAll('.access-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.access-pane').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');document.getElementById('pane-'+pane).classList.add('active');
+  if(pane!=='generate') renderAccessLists();
 }
 
 /* ─── RENDER GRID ─── */
@@ -1101,7 +1216,7 @@ function toggleStep(idx){
   if(!progress[currentModuleId])progress[currentModuleId]={completed:false,stepsDone:[]};
   const arr=progress[currentModuleId].stepsDone,pos=arr.indexOf(idx);
   if(pos>-1)arr.splice(pos,1);else arr.push(idx);
-  saveProgress();openDetail(currentModuleId);render();
+  save();openDetail(currentModuleId);render();
 }
 function completeModule(){
   if(!currentModuleId)return;
@@ -1109,7 +1224,7 @@ function completeModule(){
   const mod=modules.find(m=>m.id===currentModuleId);
   progress[currentModuleId].completed=true;
   progress[currentModuleId].stepsDone=mod.steps.map((_,i)=>i);
-  saveProgress();render();openDetail(currentModuleId);
+  save();render();openDetail(currentModuleId);
   showToast('Module complete — '+mod.xp+' XP earned!');
 }
 function closeDetail(){
@@ -1132,7 +1247,7 @@ function getEmbedUrl(url){
 /* ─── ADD / EDIT MODAL ─── */
 function openAddModal(){
   editingId=null;
-  const isEditor=USER&&false;
+  const isEditor=editorMode&&!adminMode;
   document.getElementById('modal-heading').textContent='Add Learning Module';
   document.getElementById('modal-subtitle').textContent='Define the topic, lessons, videos, and learning materials';
   document.getElementById('mod-title').value='';document.getElementById('mod-desc').value='';
@@ -1148,7 +1263,7 @@ function openAddModal(){
 function editModule(id){
   const mod=modules.find(m=>m.id===id);if(!mod)return;
   editingId=id;
-  const isEditor=USER&&false;
+  const isEditor=editorMode&&!adminMode;
   document.getElementById('modal-heading').textContent=isEditor?'Edit Lessons, Videos & Materials':'Edit Module';
   document.getElementById('modal-subtitle').textContent=isEditor?'Update lesson titles, videos, and learning material links':'Update module content, lessons, videos, and materials';
   document.getElementById('mod-title').value=mod.title;document.getElementById('mod-desc').value=mod.desc;
@@ -1243,7 +1358,7 @@ function renumberSteps(){
 }
 
 function saveModule(){
-  const isEditor=USER&&false;
+  const isEditor=editorMode&&!adminMode;
   const title=isEditor?(modules.find(m=>m.id===editingId)||{}).title||'':document.getElementById('mod-title').value.trim();
   if(!isEditor&&!title){alert('Please enter a module title.');return;}
 
@@ -1273,8 +1388,8 @@ function saveModule(){
         modules[idx]={...modules[idx],title,desc:desc||modules[idx].desc,level,icon,xp,steps:steps.length?steps:[{title:'Complete this lesson',video:'',materials:[]}]};
       }
     }
-    saveModules();render();closeAddModal();
-    showToast('Module updated'+(isEditor?' by '+USER.name:''));
+    save();render();closeAddModal();
+    showToast('Module updated'+(isEditor?' by '+editorName:''));
     if(currentModuleId===editingId)openDetail(editingId);
   }else{
     const desc=document.getElementById('mod-desc').value.trim();
@@ -1282,7 +1397,7 @@ function saveModule(){
     const icon=document.getElementById('mod-icon').value;
     const xp=parseInt(document.getElementById('mod-xp').value)||150;
     modules.push({id:Date.now(),title,desc:desc||'Complete this module.',level,icon,xp,steps:steps.length?steps:[{title:'Complete this lesson',video:'',materials:[]}]});
-    saveModules();render();closeAddModal();showToast('Module "'+title+'" added');
+    save();render();closeAddModal();showToast('Module "'+title+'" added');
   }
 }
 
@@ -1294,7 +1409,7 @@ function executeDelete(){
   if(!pendingDeleteId)return;
   const mod=modules.find(m=>m.id===pendingDeleteId);
   modules=modules.filter(m=>m.id!==pendingDeleteId);delete progress[pendingDeleteId];
-  saveModules();saveProgress();render();closeConfirm();if(currentModuleId===pendingDeleteId)closeDetail();
+  save();render();closeConfirm();if(currentModuleId===pendingDeleteId)closeDetail();
   showToast((mod?'"'+mod.title+'"':'Module')+' deleted');
 }
 
@@ -1305,14 +1420,10 @@ function showToast(msg){
 
 document.getElementById('add-modal').addEventListener('click',function(e){if(e.target===this)closeAddModal();});
 document.getElementById('confirm-overlay').addEventListener('click',function(e){if(e.target===this)closeConfirm();});
-});
+document.getElementById('access-modal').addEventListener('click',function(e){if(e.target===this)closeAccessModal();});
+document.getElementById('code-entry-modal').addEventListener('click',function(e){if(e.target===this)closeCodeEntryModal();});
 
-async function initPage(){
-  await load();
-  applyModeUI();
-  render();
-}
-initPage();
+load();applyModeUI();render();
 </script>
 </body>
 </html>
