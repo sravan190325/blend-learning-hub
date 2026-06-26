@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Project Manager Learning Hub — Blend</title>
+<style>
+:root{
+  --w:#FFFFFF;--ow:#F4F3F0;--lt:#A2F3F3;--nt:#00EDED;
+  --wb:#053057;--cg:#314550;--g:#1A1A1A;--dg:#0B0D0E;
+  --font:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--ow);color:var(--wb);min-height:100vh;font-weight:400}
+
+/* HEADER */
+header{background:var(--w);border-bottom:1px solid var(--lt);padding:0.9rem 2.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.h-left{display:flex;align-items:center;gap:1.5rem}
+.h-div{width:1px;height:28px;background:var(--lt)}
+.h-prog{font-size:0.72rem;color:var(--cg);letter-spacing:0.08em;text-transform:uppercase}
+.h-right{display:flex;align-items:center;gap:0.75rem}
+.mode-pill{display:flex;align-items:center;gap:0.45rem;font-size:0.72rem;padding:0.28rem 0.7rem;border-radius:20px;border:1px solid var(--lt);color:var(--cg);background:transparent;cursor:pointer;transition:all 150ms;font-family:var(--font)}
+.mode-pill.admin{background:var(--wb);color:var(--w);border-color:var(--wb)}
+.mode-pill.editor{background:#1a6b3a;color:var(--w);border-color:#1a6b3a}
+.mode-pill .pill-dot{width:6px;height:6px;border-radius:50%;background:var(--cg);transition:background 150ms;flex-shrink:0}
+.mode-pill.admin .pill-dot{background:var(--nt)}
+.mode-pill.editor .pill-dot{background:#7effc4}
+.user-chip{display:flex;align-items:center;gap:0.45rem;font-size:0.78rem;color:var(--cg);padding:0.28rem 0.55rem;border-radius:6px}
+.avatar{width:27px;height:27px;border-radius:50%;background:var(--wb);color:var(--w);display:flex;align-items:center;justify-content:center;font-size:0.6rem;letter-spacing:0.04em}
+
+/* EDITOR BANNER */
+.editor-banner{background:#e8f8ef;border-bottom:1px solid #9ddbb9;padding:0.5rem 2.5rem;display:none;align-items:center;gap:0.75rem}
+.editor-banner.show{display:flex}
+.editor-banner-text{font-size:0.78rem;color:#1a6b3a;flex:1}
+.editor-exit{background:none;border:1px solid #9ddbb9;border-radius:4px;padding:0.22rem 0.6rem;font-size:0.72rem;color:#1a6b3a;cursor:pointer;font-family:var(--font);transition:background 150ms}
+.editor-exit:hover{background:#d0f0dc}
+
+/* HERO */
+.hero{background:var(--w);padding:3rem 2.5rem 2.5rem;border-bottom:1px solid var(--lt)}
+.hero-eyebrow{font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--nt);background:var(--wb);display:inline-block;padding:0.22rem 0.75rem;border-radius:3px;margin-bottom:0.85rem}
+.hero-title{font-size:2.4rem;color:var(--wb);font-weight:400;line-height:1.15;margin-bottom:0.6rem;max-width:640px}
+.hero-sub{font-size:0.95rem;color:var(--cg);max-width:560px;line-height:1.65;margin-bottom:2rem}
+.hero-totals{display:flex;gap:2.5rem;flex-wrap:wrap}
+.total-stat{display:flex;flex-direction:column;gap:0.15rem}
+.total-num{font-size:1.75rem;color:var(--wb);line-height:1}
+.total-label{font-size:0.67rem;color:var(--cg);text-transform:uppercase;letter-spacing:0.07em}
+
+/* MAIN */
+.main{padding:2.5rem;max-width:1200px;margin:0 auto}
+.tracks-label{font-size:0.68rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--cg);margin-bottom:1.5rem}
+
+/* TRACK CARDS */
+.tracks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.25rem}
+
+.track-card{background:var(--w);border:1px solid #e8e6e1;border-radius:10px;overflow:hidden;text-decoration:none;display:flex;flex-direction:column;transition:border-color 200ms,transform 150ms;position:relative}
+.track-card:hover{border-color:var(--wb);transform:translateY(-2px)}
+
+/* accent bar at top varies per track */
+.track-card .accent-bar{height:4px;width:100%}
+.accent-foundation{background:linear-gradient(90deg,var(--wb) 0%,var(--lt) 100%)}
+.accent-advanced{background:linear-gradient(90deg,#1a3a6b 0%,var(--nt) 100%)}
+.accent-enterprise{background:linear-gradient(90deg,#3a0a5c 0%,#c084fc 100%)}
+
+.track-body{padding:1.5rem 1.5rem 1.25rem;flex:1}
+.track-badge{display:inline-flex;align-items:center;gap:0.35rem;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;padding:0.2rem 0.6rem;border-radius:3px;margin-bottom:0.85rem}
+.badge-foundation{background:#EEF6FF;color:#1a4a8a}
+.badge-advanced{background:#E8F4FF;color:#0a5a9e}
+.badge-enterprise{background:#F3EEFF;color:#5b30a6}
+
+.track-title{font-size:1.3rem;color:var(--wb);margin-bottom:0.4rem;line-height:1.25}
+.track-desc{font-size:0.82rem;color:var(--cg);line-height:1.6;margin-bottom:1.25rem}
+
+.track-modules{display:flex;flex-direction:column;gap:0.3rem;margin-bottom:1.25rem}
+.track-module-item{display:flex;align-items:center;gap:0.55rem;font-size:0.78rem;color:var(--cg)}
+.track-module-item .dot{width:5px;height:5px;border-radius:50%;background:var(--lt);flex-shrink:0}
+.track-module-item.done .dot{background:var(--nt)}
+.track-module-item.done span{color:var(--wb)}
+
+.track-footer{padding:1rem 1.5rem;border-top:1px solid var(--ow);display:flex;align-items:center;justify-content:space-between}
+.track-progress-wrap{flex:1;margin-right:1rem}
+.track-progress-meta{display:flex;justify-content:space-between;margin-bottom:0.35rem}
+.track-progress-label{font-size:0.68rem;color:var(--cg)}
+.track-progress-pct{font-size:0.68rem;color:var(--wb)}
+.track-progress-track{height:3px;background:var(--ow);border-radius:2px;overflow:hidden;border:1px solid #e0ddd7}
+.track-progress-fill{height:100%;border-radius:2px;transition:width 600ms cubic-bezier(0.4,0,0.2,1)}
+.fill-foundation{background:var(--wb)}
+.fill-advanced{background:#1a3a6b}
+.fill-enterprise{background:#7c3aed}
+
+.track-cta{display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;color:var(--wb);background:var(--nt);border:none;padding:0.45rem 1rem;border-radius:5px;cursor:pointer;font-family:var(--font);transition:opacity 150ms;white-space:nowrap;text-decoration:none}
+.track-cta:hover{opacity:0.82}
+.track-cta.locked{background:var(--ow);color:var(--cg);cursor:default}
+.track-cta.locked:hover{opacity:1}
+
+/* XP summary pill */
+.track-xp-pill{display:flex;align-items:center;gap:0.35rem;font-size:0.7rem;color:var(--wb);background:var(--lt);padding:0.2rem 0.6rem;border-radius:12px;white-space:nowrap}
+
+/* CERT ROW */
+.cert-section{margin-top:2.5rem}
+.cert-label{font-size:0.68rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--cg);margin-bottom:1rem}
+.cert-row{display:flex;gap:1rem;flex-wrap:wrap}
+.cert-card{background:var(--w);border:1px solid #e8e6e1;border-radius:8px;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;flex:1;min-width:240px;transition:border-color 150ms}
+.cert-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0}
+.cert-icon-foundation{background:#EEF6FF}
+.cert-icon-advanced{background:#E8F4FF}
+.cert-icon-enterprise{background:#F3EEFF}
+.cert-info{}
+.cert-name{font-size:0.85rem;color:var(--wb);margin-bottom:0.15rem}
+.cert-status{font-size:0.72rem;color:var(--cg)}
+.cert-card.earned{border-color:var(--nt)}
+.cert-card.earned .cert-status{color:#1a6b3a}
+
+/* MODALS */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(5,48,87,0.32);z-index:200;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--w);border-radius:10px;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(5,48,87,0.18)}
+.modal-sm{max-width:440px}
+.modal-header{padding:1.4rem 1.4rem 0.9rem;border-bottom:1px solid var(--lt);display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;position:sticky;top:0;background:var(--w);z-index:1}
+.modal-title{font-size:1.05rem;color:var(--wb);margin-bottom:0.2rem}
+.modal-subtitle{font-size:0.77rem;color:var(--cg)}
+.modal-close{background:none;border:1px solid #e8e6e1;border-radius:5px;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--cg);font-size:0.9rem;flex-shrink:0;transition:background 150ms}
+.modal-close:hover{background:var(--ow)}
+.modal-body{padding:1.4rem}
+.modal-footer{padding:0.9rem 1.4rem;border-top:1px solid var(--lt);display:flex;justify-content:space-between;align-items:center;gap:0.75rem}
+.modal-footer-right{display:flex;gap:0.6rem}
+.form-field{margin-bottom:1.1rem}
+.form-label{display:block;font-size:0.76rem;color:var(--wb);margin-bottom:0.35rem}
+.form-hint{font-size:0.7rem;color:var(--cg);margin-top:0.3rem;line-height:1.4}
+.form-input,.form-select{width:100%;padding:0.55rem 0.7rem;border:1px solid #dddbd5;border-radius:5px;font-family:var(--font);font-size:0.85rem;color:var(--wb);background:var(--w);transition:border-color 150ms;outline:none}
+.form-input:focus,.form-select:focus{border-color:var(--wb)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.code-error{font-size:0.75rem;color:#c0392b;margin-top:0.4rem;display:none}
+.code-error.show{display:block}
+
+/* ACCESS */
+.access-modal .modal-body{padding:0}
+.access-tabs{display:flex;border-bottom:1px solid var(--lt)}
+.access-tab{flex:1;padding:0.7rem;font-size:0.78rem;color:var(--cg);cursor:pointer;text-align:center;border:none;background:none;font-family:var(--font);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color 150ms}
+.access-tab.active{color:var(--wb);border-bottom-color:var(--wb)}
+.access-pane{display:none;padding:1.4rem}
+.access-pane.active{display:block}
+.code-card{background:var(--wb);border-radius:8px;padding:1.25rem 1.4rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.code-card-name{font-size:0.72rem;color:rgba(255,255,255,0.6);margin-bottom:0.25rem;text-transform:uppercase;letter-spacing:0.07em}
+.code-card-value{font-size:1.5rem;letter-spacing:0.25em;color:var(--nt);font-family:monospace}
+.code-card-meta{font-size:0.68rem;color:rgba(255,255,255,0.5);margin-top:0.3rem}
+.copy-btn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;padding:0.35rem 0.7rem;font-size:0.72rem;color:var(--w);cursor:pointer;font-family:var(--font);transition:background 150ms;white-space:nowrap}
+.copy-btn:hover{background:rgba(255,255,255,0.18)}
+.code-card.used{background:var(--cg)}
+.code-card.used .code-card-value{color:#7effc4}
+.code-tag{display:inline-block;font-size:0.62rem;padding:0.1rem 0.4rem;border-radius:3px;margin-top:0.3rem}
+.tag-active{background:rgba(0,237,237,0.15);color:var(--nt)}
+.tag-used{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5)}
+.tag-expired{background:rgba(255,100,100,0.15);color:#ff9999}
+.gen-form{background:var(--ow);border-radius:8px;padding:1.1rem;margin-bottom:1rem}
+.gen-form-title{font-size:0.78rem;color:var(--wb);margin-bottom:0.75rem}
+.access-entry{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid var(--ow);gap:0.75rem}
+.access-entry:last-child{border-bottom:none}
+.entry-name{font-size:0.85rem;color:var(--wb)}
+.entry-meta{font-size:0.7rem;color:var(--cg);margin-top:0.15rem}
+.entry-right{display:flex;align-items:center;gap:0.5rem;flex-shrink:0}
+.revoke-btn{background:none;border:1px solid #f5c0c0;border-radius:4px;padding:0.2rem 0.55rem;font-size:0.7rem;color:#c0392b;cursor:pointer;font-family:var(--font);transition:background 150ms}
+.revoke-btn:hover{background:#FEE}
+.access-empty{text-align:center;padding:2rem 1rem;color:var(--cg);font-size:0.82rem;line-height:1.6}
+.btn-cancel{background:none;border:1px solid #dddbd5;border-radius:5px;padding:0.48rem 1rem;font-family:var(--font);font-size:0.82rem;color:var(--cg);cursor:pointer;transition:background 150ms}
+.btn-cancel:hover{background:var(--ow)}
+.btn-green{background:#1a6b3a;border:none;border-radius:5px;padding:0.48rem 1.2rem;font-family:var(--font);font-size:0.82rem;color:var(--w);cursor:pointer;transition:opacity 150ms}
+.btn-green:hover{opacity:0.87}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.4rem;right:1.4rem;background:var(--wb);color:var(--w);padding:0.65rem 1.1rem;border-radius:6px;font-size:0.8rem;z-index:400;opacity:0;transform:translateY(6px);transition:opacity 250ms,transform 250ms;pointer-events:none;max-width:300px}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* LOGIN MODAL */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.logout-btn{background:none;border:1px solid var(--lt);border-radius:4px;padding:0.22rem 0.6rem;font-size:0.68rem;color:var(--cg);cursor:pointer;font-family:var(--font);transition:background 150ms}
+.logout-btn:hover{background:var(--ow)}
+
+@media(max-width:640px){
+  header{padding:0.85rem 1rem}
+  .hero{padding:1.75rem 1rem 1.5rem}
+  .main{padding:1.5rem 1rem}
+  .hero-title{font-size:1.6rem}
+  .editor-banner{padding:0.5rem 1rem}
+  .form-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="h-left">
+    <svg width="96" height="19" viewBox="0 0 572 110" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Blend">
+      <path d="M0 90.2812V25.1138H48.9904C64.5239 25.1138 70.3146 32.0074 70.3146 41.3827C70.3146 48.552 66.2703 53.8831 59.2848 56.4567C67.4652 58.3869 74.0831 62.9826 74.0831 72.5417C74.0831 83.2957 67.1895 90.2812 53.1265 90.2812H0ZM12.3165 81.0898H49.2661C56.895 81.0898 61.307 78.1485 61.307 71.163C61.307 63.626 55.4244 61.4201 49.2661 61.4201H12.3165V81.0898ZM12.3165 53.5154H45.5896C52.2074 53.5154 58.0899 51.2176 58.0899 43.7725C58.0899 37.1546 53.6781 34.3053 45.5896 34.3053H12.3165V53.5154Z" fill="#053057"/>
+      <path d="M79.532 90.2812V16.7496H91.6647V90.2812H79.532Z" fill="#053057"/>
+      <path d="M136.308 92.1195C112.778 92.1195 98.4392 81.3655 98.4392 63.1664C98.4392 44.9674 113.054 34.1215 135.665 34.1215C158.459 34.1215 172.338 45.335 172.338 67.5783H111.583C113.421 77.2293 122.245 82.3766 136.676 82.3766C148.533 82.3766 156.529 78.7 158.919 72.4498H171.511C168.202 84.7663 156.161 92.1195 136.308 92.1195ZM111.767 58.1111H159.195C156.989 48.1844 148.9 43.7725 135.756 43.7725C122.521 43.7725 113.973 48.3682 111.767 58.1111Z" fill="#053057"/>
+      <path d="M178.454 90.2812V35.9598H191.322V47.7248C198.308 38.9929 209.062 34.1215 223.033 34.1215C240.497 34.1215 251.159 41.1989 251.159 62.6149V90.2812H238.291V66.9349C238.291 50.9418 232.041 44.8755 217.242 44.8755C201.893 44.8755 191.322 53.2397 191.322 67.3945V90.2812H178.454Z" fill="#053057"/>
+      <path d="M320.105 90.2812V78.8838C314.499 87.248 304.02 92.2114 290.969 92.2114C270.747 92.2114 257.696 80.814 257.696 63.2584C257.696 45.7027 270.747 34.2134 290.969 34.2134C304.02 34.2134 314.499 39.1768 320.105 47.6329V16.7496H332.146V90.2812H320.105ZM271.023 63.2584C271.023 74.2881 280.123 81.4574 294.829 81.4574C310.546 81.4574 320.105 74.2881 320.105 63.2584C320.105 52.1367 310.546 44.9674 294.829 44.9674C280.123 44.9674 271.023 52.1367 271.023 63.2584Z" fill="#053057"/>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M376.721 38.4244L377.454 70.7403V70.7952C377.454 73.5762 378.918 76.7863 382.791 80.2685C386.661 83.7493 392.535 87.1071 400.208 90.0267C415.519 95.8531 436.998 99.5602 460.963 99.5602C484.928 99.5602 506.407 95.8569 521.718 90.0325C529.391 87.1139 535.264 83.7567 539.135 80.2756C543.006 76.7935 544.472 73.5813 544.472 70.7952C544.472 68.0091 543.006 64.797 539.135 61.3149C538.756 60.974 538.358 60.6344 537.94 60.2962C534.003 62.7131 529.451 64.8785 524.445 66.7826C507.772 73.1251 485.067 76.9461 460.23 76.9461C443.554 76.9461 431.366 76.1549 419.478 73.4773C407.648 70.8129 396.353 66.3346 381.399 59.2516C380.589 58.91 379.132 58.0422 378.58 56.082C377.991 53.9873 378.979 52.4261 379.22 52.0651C379.567 51.5471 379.934 51.2188 380.073 51.0983C380.251 50.943 380.406 50.8307 380.499 50.7665C380.797 50.5595 381.07 50.4207 381.138 50.386L381.145 50.3827C381.354 50.2765 381.579 50.1761 381.754 50.0997C382.14 49.9319 382.672 49.714 383.317 49.4597C384.619 48.9458 386.508 48.2337 388.87 47.3913C393.597 45.7058 400.276 43.4782 408.031 41.2555C423.442 36.8381 443.498 32.322 460.963 32.322C485.8 32.322 508.505 36.1429 525.178 42.4854C529.827 44.2541 534.086 46.2483 537.824 48.46C538.021 48.2914 538.214 48.1224 538.402 47.9532C542.274 44.4711 543.739 41.2589 543.739 38.4728C543.739 35.6867 542.274 32.4746 538.402 28.9925C534.532 25.5113 528.658 22.1541 520.986 19.2355C505.675 13.4112 484.196 9.7078 460.23 9.7078C436.265 9.7078 414.786 13.4112 399.475 19.2355C391.803 22.1541 385.929 25.5113 382.058 28.9925C378.209 32.4544 376.738 35.6495 376.721 38.4244ZM545.848 54.2902C550.405 49.89 553.459 44.5616 553.459 38.4728C553.459 31.9736 549.979 26.3407 544.907 21.7783C539.833 17.2148 532.765 13.3279 524.445 10.163C507.772 3.8205 485.067 -0.000427246 460.23 -0.000427246C435.394 -0.000427246 412.688 3.8205 396.015 10.163C387.696 13.3279 380.628 17.2148 375.554 21.7783C370.482 26.3407 367.001 31.9736 367.001 38.4728V38.5277L367.734 70.8544C367.755 77.3257 371.231 82.9363 376.287 87.4833C381.36 92.0456 388.428 95.9329 396.747 99.0988C413.42 105.443 436.125 109.268 460.963 109.268C485.8 109.268 508.505 105.448 525.178 99.105C533.497 95.9401 540.565 92.0532 545.639 87.4897C550.711 82.9273 554.192 77.2944 554.192 70.7952C554.192 64.3857 550.807 58.8188 545.848 54.2902ZM528.461 54.4534C526.398 53.4509 524.148 52.4824 521.718 51.5579C506.407 45.7335 484.928 42.0302 460.963 42.0302C444.879 42.0302 425.871 46.242 410.712 50.5871C405.077 52.2022 400.029 53.8194 395.935 55.2126C405.589 59.4147 413.531 62.1858 421.616 64.0068C432.468 66.4509 443.82 67.2378 460.23 67.2378C484.196 67.2378 505.675 63.5345 520.986 57.7101C523.707 56.675 526.202 55.5848 528.461 54.4534Z" fill="#053057"/>
+    </svg>
+    <div class="h-div"></div>
+    <span class="h-prog">Learning Hub</span>
+  </div>
+  <div class="h-right">
+    
+    <div class="user-chip"><div class="avatar" id="user-avatar">PM</div><span id="user-name">AI PM</span></div>
+    <button class="logout-btn" onclick="changeName()">Change name</button>
+  </div>
+</header>
+
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">AI Project Manager</div>
+  <h1 class="hero-title">Learning Hub</h1>
+  <p class="hero-sub">Three progressive tracks to build your AI PM capability — from core fundamentals to enterprise transformation leadership. Work through each track at your own pace.</p>
+  <div class="hero-totals">
+    <div class="total-stat"><div class="total-num" id="total-modules">15</div><div class="total-label">Total modules</div></div>
+    <div class="total-stat"><div class="total-num" id="total-completed">0</div><div class="total-label">Completed</div></div>
+    <div class="total-stat"><div class="total-num" id="total-xp-avail">3,180</div><div class="total-label">XP available</div></div>
+    
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="tracks-label">Learning Tracks</div>
+  <div class="tracks-grid" id="tracks-grid">
+
+    <!-- FOUNDATION TRACK -->
+    <a class="track-card" href="foundation.html" id="card-foundation">
+      <div class="accent-bar accent-foundation"></div>
+      <div class="track-body">
+        <div class="track-badge badge-foundation">🎓 Foundation</div>
+        <div class="track-title">AI Project Manager Foundation</div>
+        <div class="track-desc">Master the core skills every AI PM needs — from fundamentals and project lifecycle to prompt engineering, risk management, and data literacy.</div>
+        <div class="track-modules" id="mods-foundation">
+          <div class="track-module-item"><span class="dot"></span><span>AI Fundamentals &amp; Project Lifecycle</span></div>
+          <div class="track-module-item"><span class="dot"></span><span>Agile + AI Delivery Models</span></div>
+          <div class="track-module-item"><span class="dot"></span><span>Prompt Engineering Basics</span></div>
+          <div class="track-module-item"><span class="dot"></span><span>Risk &amp; Stakeholder Management</span></div>
+          <div class="track-module-item"><span class="dot"></span><span>Data &amp; AI Terminology</span></div>
+        </div>
+      </div>
+      <div class="track-footer">
+        <div class="track-progress-wrap">
+          <div class="track-progress-meta">
+            <span class="track-progress-label">Progress</span>
+            <span class="track-progress-pct" id="pct-foundation">0%</span>
+          </div>
+          <div class="track-progress-track"><div class="track-progress-fill fill-foundation" id="fill-foundation" style="width:0%"></div></div>
+        </div>
+        <div class="track-xp-pill" id="xp-foundation">✦ 0 / 730 XP</div>
+      </div>
+    </a>
+
+    <!-- ADVANCED DELIVERY TRACK -->
+    <a class="track-card" href="advanced.html" id="card-advanced">
+      <div class="accent-bar accent-advanced"></div>
+      <div class="track-body">
+        <div class="track-badge badge-advanced">🚀 Advanced</div>
+        <div class="track-title">Advanced Delivery Track</div>
+        <div class="track-desc">Go deeper on responsible AI, GenAI delivery, RAG systems, compliance, and leading complex cross-functional AI programmes.</div>
+        <div class="track-modules" id="mods-advanced">
+          <div class="track-module-item"><span class="dot"></span><span>Responsible AI &amp; Governance</span></div>
+          <div class="track-module-item"><span class="dot"></span><span>GenAI Delivery Management</span></div>
+          <div class="track-module-item"><span class="dot"></span><span>RAG Systems &amp; AI QA</span></div>
+          <div class="track-module-item"><span class="dot"></span><span>AI Risk &amp; Compliance</span></div>
+          <div class="track-module-item"><span class="dot"></span><span>Cross-functional AI Execution</span></div>
+        </div>
+      </div>
+      <div class="track-footer">
+        <div class="track-progress-wrap">
+          <div class="track-progress-meta">
+            <span class="track-progress-label">Progress</span>
+            <span class="track-progress-pct" id="pct-advanced">0%</span>
+          </div>
+          <div class="track-progress-track"><div class="track-progress-fill fill-advanced" id="fill-advanced" style="width:0%"></div></div>
+        </div>
+        <div class="track-xp-pill" id="xp-advanced">✦ 0 / 1050 XP</div>
+      </div>
+    </a>
+
+    <!-- ENTERPRISE TRACK -->
+    <a class="track-card" href="enterprise.html" id="card-enterprise">
+      <div class="accent-bar accent-enterprise"></div>
+      <div class="track-body">
+        <div class="track-badge badge-enterprise">🏛️ Enterprise</div>
+        <div class="track-title">Enterprise Transformation Track</div>
+        <div class="track-desc">Lead organisation-wide AI transformation — developing strategy, designing operating models, governing portfolios, and driving executive alignment.</div>
+        <div class="track-modules" id="mods-enterprise">
+          <div class="track-module-item"><span class="dot"></span><span>Enterprise AI Strategy</span></div>
+          <div class="track-module-item"><span class="dot"></span><span>AI Operating Models</span></div>
+          <div class="track-module-item"><span class="dot"></span><span>Portfolio Governance</span></div>
+          <div class="track-module-item"><span class="dot"></span><span>Change Management</span></div>
+          <div class="track-module-item"><span class="dot"></span><span>Executive Alignment</span></div>
+        </div>
+      </div>
+      <div class="track-footer">
+        <div class="track-progress-wrap">
+          <div class="track-progress-meta">
+            <span class="track-progress-label">Progress</span>
+            <span class="track-progress-pct" id="pct-enterprise">0%</span>
+          </div>
+          <div class="track-progress-track"><div class="track-progress-fill fill-enterprise" id="fill-enterprise" style="width:0%"></div></div>
+        </div>
+        <div class="track-xp-pill" id="xp-enterprise">✦ 0 / 1150 XP</div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- CERTIFICATIONS -->
+  <div class="cert-section">
+    <div class="cert-label">Certifications</div>
+    <div class="cert-row">
+      <div class="cert-card" id="cert-foundation">
+        <div class="cert-icon cert-icon-foundation">🎓</div>
+        <div class="cert-info">
+          <div class="cert-name">AI PM Foundation</div>
+          <div class="cert-status" id="cert-status-foundation">Complete all 5 Foundation modules to earn</div>
+        </div>
+      </div>
+      <div class="cert-card" id="cert-advanced">
+        <div class="cert-icon cert-icon-advanced">🚀</div>
+        <div class="cert-info">
+          <div class="cert-name">Advanced Delivery</div>
+          <div class="cert-status" id="cert-status-advanced">Complete all 5 Advanced modules to earn</div>
+        </div>
+      </div>
+      <div class="cert-card" id="cert-enterprise">
+        <div class="cert-icon cert-icon-enterprise">🏛️</div>
+        <div class="cert-info">
+          <div class="cert-name">Enterprise Transformation</div>
+          <div class="cert-status" id="cert-status-enterprise">Complete all 5 Enterprise modules to earn</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+
+<div class="modal-overlay" id="code-entry-modal">
+  <div class="modal modal-sm" role="dialog" aria-modal="true" aria-labelledby="code-entry-heading">
+    <div class="modal-header">
+      <div><h2 class="modal-title" id="code-entry-heading">Enter Access Code</h2><p class="modal-subtitle">Enter the code shared by your Admin to unlock editor access on all tracks</p></div>
+      <button class="modal-close" onclick="closeCodeEntryModal()" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-field">
+        <label class="form-label" for="code-input">Access code</label>
+        <input type="text" id="code-input" class="form-input" placeholder="e.g. BLN-4X9K" maxlength="10" style="letter-spacing:0.12em;text-transform:uppercase;font-size:1rem">
+        <div class="code-error" id="code-error">Invalid or already used code.</div>
+      </div>
+      <div class="form-field"><label class="form-label" for="code-name-input">Your name</label><input type="text" id="code-name-input" class="form-input" placeholder="Your full name"></div>
+    </div>
+    <div class="modal-footer"><div></div><div class="modal-footer-right"><button class="btn-cancel" onclick="closeCodeEntryModal()">Cancel</button><button class="btn-green" onclick="submitAccessCode()">Unlock Editor Access</button></div></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+
+<script>
+/* ── DASHBOARD ── */
+async function loadDashboard(){
+  try{
+    return await apiFetch('/api/dashboard');
+  }catch(e){
+    return {
+      foundation:{completed:0,total:5,earnedXP:0,totalXP:730},
+      advanced:{completed:0,total:5,earnedXP:0,totalXP:1050},
+      enterprise:{completed:0,total:5,earnedXP:0,totalXP:1150}
+    };
+  }
+}
+
+async function renderDashboard(){
+  const dash=await loadDashboard();
+  let grandTotal=0,grandCompleted=0;
+  ['foundation','advanced','enterprise'].forEach(t=>{
+    const d=dash[t]||{completed:0,total:5,earnedXP:0,totalXP:0};
+    const pct=d.total>0?Math.round((d.completed/d.total)*100):0;
+    document.getElementById('pct-'+t).textContent=pct+'%';
+    document.getElementById('fill-'+t).style.width=pct+'%';
+    document.getElementById('xp-'+t).textContent='✦ '+d.earnedXP+' / '+d.totalXP+' XP';
+    grandTotal+=d.total;
+    grandCompleted+=d.completed;
+    const cert=document.getElementById('cert-'+t);
+    const certStatus=document.getElementById('cert-status-'+t);
+    if(d.completed===d.total&&d.total>0){
+      cert.classList.add('earned');
+      certStatus.textContent='✓ Earned — '+new Date().toLocaleDateString();
+    }
+  });
+  document.getElementById('total-completed').textContent=grandCompleted;
+  document.getElementById('total-modules').textContent=grandTotal;
+  // Update user display
+  if(USER){
+    const ini=USER.name.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'U';
+    document.getElementById('user-avatar').textContent=ini;
+    document.getElementById('user-name').textContent=USER.name;
+    var b=document.getElementById('access-mgmt-btn');if(b)b.style.display='none';
+  }
+}
+
+function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+
+async function initPage(){
+  await renderDashboard();
+}
+initPage();
+</script>
+</body>
+</html>

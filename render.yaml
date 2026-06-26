@@ -1,0 +1,52 @@
+# Blend Learning Hub — Render Blueprint
+#
+# This file lets Render deploy your hub in one click.
+# Two service configurations are defined below: pick ONE by uncommenting it.
+#
+# ──────────────────────────────────────────────────────────────────────────
+# OPTION A — FREE TIER (good for testing, NOT for production)
+# ──────────────────────────────────────────────────────────────────────────
+# ⚠️ IMPORTANT: Render free tier has an EPHEMERAL filesystem.
+#    That means every time the service restarts (sleeps after 15 min of
+#    inactivity, or when you redeploy), data.json is WIPED.
+#    Use this only to test that everything works. Then switch to Option B.
+# ──────────────────────────────────────────────────────────────────────────
+
+services:
+  - type: web
+    name: blend-learning-hub
+    runtime: node
+    region: oregon          # pick closest: oregon, frankfurt, singapore, ohio
+    plan: free              # ← change to 'starter' for production (Option B)
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      # ─── Uncomment these TWO lines for Option B (persistent disk) ───
+      # - key: DATA_DIR
+      #   value: /var/data
+      # - key: CERTIFICATES_DIR
+      #   value: /var/data/certificates
+
+    # ─── Uncomment this whole block for Option B (persistent disk) ───
+    # disk:
+    #   name: blend-data
+    #   mountPath: /var/data
+    #   sizeGB: 1
+
+# ──────────────────────────────────────────────────────────────────────────
+# OPTION B — STARTER TIER + PERSISTENT DISK (recommended for real use)
+# ──────────────────────────────────────────────────────────────────────────
+# Costs ~$7/month for the service + ~$0.25/month per GB of disk.
+# Data persists across restarts and deploys. No sleeping.
+#
+# To enable:
+#   1. Change `plan: free` above to `plan: starter`
+#   2. Uncomment the two DATA_DIR / CERTIFICATES_DIR env vars above
+#   3. Uncomment the `disk:` block above
+#   4. Commit + push — Render redeploys with the disk attached
+# ──────────────────────────────────────────────────────────────────────────

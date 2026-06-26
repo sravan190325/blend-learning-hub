@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Delivery Track — Blend Learning</title>
+<style>
+:root{
+  --w:#FFFFFF;--ow:#F4F3F0;--lt:#A2F3F3;--nt:#00EDED;
+  --wb:#053057;--cg:#314550;--g:#1A1A1A;--dg:#0B0D0E;
+  --font:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--ow);color:var(--wb);min-height:100vh;font-weight:400}
+
+/* HEADER */
+header{background:var(--w);border-bottom:1px solid var(--lt);padding:0.85rem 2.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.h-left{display:flex;align-items:center;gap:1.5rem}
+.h-div{width:1px;height:28px;background:var(--lt)}
+.h-prog{font-size:0.72rem;color:var(--cg);letter-spacing:0.08em;text-transform:uppercase}
+.h-right{display:flex;align-items:center;gap:0.75rem}
+.xp-badge{display:flex;align-items:center;gap:0.35rem;background:var(--wb);color:var(--w);padding:0.28rem 0.7rem;border-radius:20px;font-size:0.72rem;letter-spacing:0.04em}
+.xp-dot{width:5px;height:5px;background:var(--nt);border-radius:50%;display:inline-block}
+.mode-pill{display:flex;align-items:center;gap:0.45rem;font-size:0.72rem;padding:0.28rem 0.7rem;border-radius:20px;border:1px solid var(--lt);color:var(--cg);background:transparent;cursor:pointer;transition:all 150ms;font-family:var(--font)}
+.mode-pill.admin{background:var(--wb);color:var(--w);border-color:var(--wb)}
+.mode-pill.editor{background:#1a6b3a;color:var(--w);border-color:#1a6b3a}
+.mode-pill .pill-dot{width:6px;height:6px;border-radius:50%;background:var(--cg);transition:background 150ms;flex-shrink:0}
+.mode-pill.admin .pill-dot{background:var(--nt)}
+.mode-pill.editor .pill-dot{background:#7effc4}
+.user-chip{display:flex;align-items:center;gap:0.45rem;font-size:0.78rem;color:var(--cg);cursor:pointer;padding:0.28rem 0.55rem;border-radius:6px;transition:background 150ms}
+.user-chip:hover{background:var(--ow)}
+.avatar{width:27px;height:27px;border-radius:50%;background:var(--wb);color:var(--w);display:flex;align-items:center;justify-content:center;font-size:0.6rem;letter-spacing:0.04em}
+
+/* HERO */
+.hero{background:var(--w);padding:2.2rem 2.5rem 0;border-bottom:1px solid var(--lt)}
+.back-link{display:inline-flex;align-items:center;gap:0.4rem;font-size:0.78rem;color:var(--cg);text-decoration:none;margin-bottom:1.25rem;cursor:pointer;transition:color 150ms}
+.back-link:hover{color:var(--wb)}
+.hero-content{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap}
+.hero-label{font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--nt);background:var(--wb);display:inline-block;padding:0.22rem 0.65rem;border-radius:3px;margin-bottom:0.65rem}
+.hero-title{font-size:1.9rem;color:var(--wb);font-weight:400;line-height:1.2;margin-bottom:0.45rem;max-width:520px}
+.hero-subtitle{font-size:0.88rem;color:var(--cg);max-width:480px;line-height:1.6}
+.hero-stats{display:flex;gap:2rem;padding:1.4rem 0;flex-shrink:0}
+.stat{text-align:center}
+.stat-num{font-size:1.5rem;color:var(--wb);line-height:1;margin-bottom:0.18rem}
+.stat-label{font-size:0.67rem;color:var(--cg);letter-spacing:0.07em;text-transform:uppercase}
+
+/* PROGRESS BAND */
+.prog-band{background:var(--w);padding:0.7rem 2.5rem;border-bottom:1px solid var(--lt);display:flex;align-items:center;gap:1.25rem}
+.prog-label{font-size:0.72rem;color:var(--cg);white-space:nowrap}
+.prog-track{flex:1;height:4px;background:var(--lt);border-radius:2px;overflow:hidden;max-width:360px}
+.prog-fill{height:100%;background:var(--wb);border-radius:2px;transition:width 600ms cubic-bezier(0.4,0,0.2,1)}
+.prog-pct{font-size:0.72rem;color:var(--wb);white-space:nowrap}
+.rank-pill{display:flex;align-items:center;gap:0.35rem;font-size:0.7rem;color:var(--wb);background:var(--lt);padding:0.18rem 0.6rem;border-radius:12px}
+
+/* MAIN */
+.main{padding:1.75rem 2.5rem;max-width:1400px;margin:0 auto}
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem}
+.sec-title{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--cg)}
+.sec-actions{display:flex;gap:0.5rem;align-items:center}
+.add-btn{display:flex;align-items:center;gap:0.35rem;font-size:0.78rem;color:var(--wb);background:var(--nt);border:none;padding:0.42rem 0.9rem;border-radius:5px;cursor:pointer;font-family:var(--font);transition:opacity 150ms}
+.add-btn:hover{opacity:0.82}
+.access-btn{display:flex;align-items:center;gap:0.35rem;font-size:0.78rem;color:var(--wb);background:var(--w);border:1px solid #dddbd5;padding:0.42rem 0.9rem;border-radius:5px;cursor:pointer;font-family:var(--font);transition:background 150ms}
+.access-btn:hover{background:var(--ow)}
+
+/* MODULE GRID */
+.modules-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+
+/* MODULE CARD */
+.module-card{background:var(--w);border:1px solid #e8e6e1;border-radius:8px;padding:1.15rem;cursor:pointer;position:relative;transition:border-color 200ms,transform 150ms;overflow:hidden}
+.module-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--lt);transition:background 200ms}
+.module-card:hover{border-color:var(--wb);transform:translateY(-1px)}
+.module-card:hover::before{background:var(--wb)}
+.module-card.completed::before{background:var(--nt)}
+.module-card.active::before{background:var(--wb)}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.65rem}
+.card-icon{width:34px;height:34px;border-radius:6px;background:var(--ow);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.card-badges{display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap}
+.card-status{display:flex;align-items:center;gap:0.28rem;font-size:0.62rem;text-transform:uppercase;letter-spacing:0.07em;padding:0.18rem 0.5rem;border-radius:3px}
+.status-dot{width:4px;height:4px;border-radius:50%}
+.status-novice{background:var(--ow);color:var(--cg)}.status-novice .status-dot{background:var(--cg)}
+.status-beginner{background:#EEF4FF;color:#2257B5}.status-beginner .status-dot{background:#2257B5}
+.status-intermediate{background:#FFF4E0;color:#B56E00}.status-intermediate .status-dot{background:#B56E00}
+.card-title{font-size:0.95rem;color:var(--wb);margin-bottom:0.35rem;line-height:1.3}
+.card-desc{font-size:0.77rem;color:var(--cg);line-height:1.5;margin-bottom:0.9rem}
+.card-footer{display:flex;align-items:center;justify-content:space-between}
+.xp-label{font-size:0.7rem;color:var(--wb);display:flex;align-items:center;gap:0.28rem}
+.xp-spark{color:var(--nt);background:var(--wb);border-radius:3px;padding:0 0.22rem;font-size:0.62rem}
+.steps-label{font-size:0.7rem;color:var(--cg)}
+.card-prog-bar{margin-top:0.65rem;height:3px;background:var(--ow);border-radius:2px;overflow:hidden}
+.card-prog-fill{height:100%;background:var(--nt);border-radius:2px}
+.has-video-tag,.has-material-tag{display:inline-flex;align-items:center;gap:0.25rem;font-size:0.6rem;padding:0.12rem 0.4rem;border-radius:3px}
+.has-video-tag{background:#EEF4FF;color:#2257B5}
+.has-material-tag{background:#F0F8EF;color:#2a7a1f}
+
+/* CARD ADMIN */
+.card-admin{display:none;position:absolute;top:0.6rem;right:0.6rem;gap:0.3rem}
+.admin-mode .card-admin,.editor-mode .card-admin{display:flex}
+.icon-btn{width:26px;height:26px;border-radius:4px;border:1px solid #e8e6e1;background:var(--w);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--cg);transition:all 150ms;z-index:2}
+.icon-btn:hover{background:var(--ow);border-color:var(--cg)}
+.icon-btn.del:hover{background:#FEE;border-color:#c0392b;color:#c0392b}
+.card-badges{padding-right:3.2rem}
+
+
+/* MODAL BASE */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(5,48,87,0.32);z-index:200;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--w);border-radius:10px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(5,48,87,0.18)}
+.modal-sm{max-width:440px}
+.modal-header{padding:1.4rem 1.4rem 0.9rem;border-bottom:1px solid var(--lt);display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;position:sticky;top:0;background:var(--w);z-index:1}
+.modal-title{font-size:1.05rem;color:var(--wb);margin-bottom:0.2rem}
+.modal-subtitle{font-size:0.77rem;color:var(--cg)}
+.modal-close{background:none;border:1px solid #e8e6e1;border-radius:5px;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--cg);font-size:0.9rem;flex-shrink:0;transition:background 150ms}
+.modal-close:hover{background:var(--ow)}
+.modal-body{padding:1.4rem}
+.modal-footer{padding:0.9rem 1.4rem;border-top:1px solid var(--lt);display:flex;justify-content:space-between;align-items:center;gap:0.75rem}
+.modal-footer-right{display:flex;gap:0.6rem}
+
+/* FORM */
+.form-field{margin-bottom:1.1rem}
+.form-label{display:block;font-size:0.76rem;color:var(--wb);margin-bottom:0.35rem;letter-spacing:0.02em}
+.form-hint{font-size:0.7rem;color:var(--cg);margin-top:0.3rem;line-height:1.4}
+.form-input,.form-select,.form-textarea{width:100%;padding:0.55rem 0.7rem;border:1px solid #dddbd5;border-radius:5px;font-family:var(--font);font-size:0.85rem;color:var(--wb);background:var(--w);transition:border-color 150ms;outline:none}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--wb)}
+.form-input.error{border-color:#c0392b}
+.form-textarea{resize:vertical;min-height:72px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+
+/* ── STEP BUILDER ── */
+.steps-builder{margin-top:0.4rem}
+.step-row{margin-bottom:0.9rem;background:var(--ow);border-radius:8px;overflow:hidden;border:1px solid #e0ddd7}
+.step-row-header{display:flex;align-items:center;gap:0.45rem;padding:0.6rem 0.65rem}
+.step-num{font-size:0.65rem;color:var(--cg);width:16px;flex-shrink:0;text-align:center}
+.step-main-fields{flex:1;display:flex;flex-direction:column;gap:0.4rem}
+.step-input{padding:0.4rem 0.55rem;border:1px solid #dddbd5;border-radius:4px;font-family:var(--font);font-size:0.8rem;color:var(--wb);background:var(--w);outline:none;transition:border-color 150ms;width:100%}
+.step-input:focus{border-color:var(--wb)}
+.step-inline-row{display:flex;align-items:center;gap:0.4rem}
+.step-inline-label{font-size:0.68rem;color:var(--cg);white-space:nowrap;flex-shrink:0}
+.step-url-input{flex:1;padding:0.32rem 0.5rem;border:1px solid #dddbd5;border-radius:4px;font-family:var(--font);font-size:0.73rem;color:var(--wb);background:var(--w);outline:none;transition:border-color 150ms}
+.step-url-input:focus{border-color:var(--wb)}
+.step-remove{background:none;border:none;cursor:pointer;color:#bbb;font-size:0.82rem;line-height:1;padding:0.15rem;transition:color 150ms;flex-shrink:0}
+.step-remove:hover{color:#c0392b}
+
+/* materials sub-section inside step row */
+.step-materials-section{border-top:1px solid #e0ddd7;padding:0.55rem 0.65rem 0.65rem;background:#f9f8f5}
+.step-materials-title{font-size:0.65rem;color:var(--cg);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.5rem;display:flex;align-items:center;justify-content:space-between}
+.add-material-btn{background:none;border:none;font-size:0.68rem;color:var(--wb);cursor:pointer;font-family:var(--font);padding:0;text-decoration:underline;text-underline-offset:2px}
+.add-material-btn:hover{color:var(--cg)}
+.material-row{display:flex;align-items:center;gap:0.4rem;margin-bottom:0.4rem}
+.material-type-select{padding:0.28rem 0.4rem;border:1px solid #dddbd5;border-radius:4px;font-family:var(--font);font-size:0.7rem;color:var(--wb);background:var(--w);outline:none;flex-shrink:0;width:88px}
+.material-label-input{flex:1;padding:0.28rem 0.45rem;border:1px solid #dddbd5;border-radius:4px;font-family:var(--font);font-size:0.73rem;color:var(--wb);background:var(--w);outline:none;transition:border-color 150ms}
+.material-label-input:focus{border-color:var(--wb)}
+.material-url-input{flex:2;padding:0.28rem 0.45rem;border:1px solid #dddbd5;border-radius:4px;font-family:var(--font);font-size:0.73rem;color:var(--wb);background:var(--w);outline:none;transition:border-color 150ms}
+.material-url-input:focus{border-color:var(--wb)}
+.material-remove{background:none;border:none;cursor:pointer;color:#bbb;font-size:0.78rem;flex-shrink:0;transition:color 150ms;padding:0}
+.material-remove:hover{color:#c0392b}
+.no-materials-hint{font-size:0.7rem;color:#aaa;font-style:italic}
+
+.add-step-btn{background:none;border:1px dashed var(--lt);border-radius:5px;padding:0.38rem 0.7rem;font-size:0.76rem;color:var(--cg);cursor:pointer;font-family:var(--font);transition:border-color 150ms,color 150ms;width:100%;margin-top:0.25rem}
+.add-step-btn:hover{border-color:var(--wb);color:var(--wb)}
+
+/* BUTTONS */
+.btn-cancel{background:none;border:1px solid #dddbd5;border-radius:5px;padding:0.48rem 1rem;font-family:var(--font);font-size:0.82rem;color:var(--cg);cursor:pointer;transition:background 150ms}
+.btn-cancel:hover{background:var(--ow)}
+.btn-save{background:var(--wb);border:none;border-radius:5px;padding:0.48rem 1.2rem;font-family:var(--font);font-size:0.82rem;color:var(--w);cursor:pointer;transition:opacity 150ms}
+.btn-save:hover{opacity:0.87}
+.btn-del{background:none;border:1px solid #f5c0c0;border-radius:5px;padding:0.48rem 1rem;font-family:var(--font);font-size:0.82rem;color:#c0392b;cursor:pointer;transition:background 150ms}
+.btn-del:hover{background:#FEE}
+.btn-green{background:#1a6b3a;border:none;border-radius:5px;padding:0.48rem 1.2rem;font-family:var(--font);font-size:0.82rem;color:var(--w);cursor:pointer;transition:opacity 150ms}
+.btn-green:hover{opacity:0.87}
+
+/* ACCESS MANAGEMENT */
+.access-modal .modal-body{padding:0}
+.access-tabs{display:flex;border-bottom:1px solid var(--lt)}
+.access-tab{flex:1;padding:0.7rem;font-size:0.78rem;color:var(--cg);cursor:pointer;text-align:center;border:none;background:none;font-family:var(--font);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color 150ms}
+.access-tab.active{color:var(--wb);border-bottom-color:var(--wb)}
+.access-pane{display:none;padding:1.4rem}
+.access-pane.active{display:block}
+.code-card{background:var(--wb);border-radius:8px;padding:1.25rem 1.4rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.code-card-name{font-size:0.72rem;color:rgba(255,255,255,0.6);margin-bottom:0.25rem;text-transform:uppercase;letter-spacing:0.07em}
+.code-card-value{font-size:1.5rem;letter-spacing:0.25em;color:var(--nt);font-family:monospace}
+.code-card-meta{font-size:0.68rem;color:rgba(255,255,255,0.5);margin-top:0.3rem}
+.copy-btn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;padding:0.35rem 0.7rem;font-size:0.72rem;color:var(--w);cursor:pointer;font-family:var(--font);transition:background 150ms;white-space:nowrap}
+.copy-btn:hover{background:rgba(255,255,255,0.18)}
+.code-card.used{background:var(--cg)}
+.code-card.used .code-card-value{color:#7effc4}
+.code-tag{display:inline-block;font-size:0.62rem;padding:0.1rem 0.4rem;border-radius:3px;margin-top:0.3rem}
+.tag-active{background:rgba(0,237,237,0.15);color:var(--nt)}
+.tag-used{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5)}
+.tag-expired{background:rgba(255,100,100,0.15);color:#ff9999}
+.gen-form{background:var(--ow);border-radius:8px;padding:1.1rem;margin-bottom:1rem}
+.gen-form-title{font-size:0.78rem;color:var(--wb);margin-bottom:0.75rem}
+.access-entry{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid var(--ow);gap:0.75rem}
+.access-entry:last-child{border-bottom:none}
+.entry-name{font-size:0.85rem;color:var(--wb)}
+.entry-meta{font-size:0.7rem;color:var(--cg);margin-top:0.15rem}
+.entry-right{display:flex;align-items:center;gap:0.5rem;flex-shrink:0}
+.revoke-btn{background:none;border:1px solid #f5c0c0;border-radius:4px;padding:0.2rem 0.55rem;font-size:0.7rem;color:#c0392b;cursor:pointer;font-family:var(--font);transition:background 150ms}
+.revoke-btn:hover{background:#FEE}
+.access-empty{text-align:center;padding:2rem 1rem;color:var(--cg);font-size:0.82rem;line-height:1.6}
+
+/* EDITOR BANNER */
+.editor-banner{background:#e8f8ef;border-bottom:1px solid #9ddbb9;padding:0.5rem 2.5rem;display:none;align-items:center;gap:0.75rem}
+.editor-banner.show{display:flex}
+.editor-banner-text{font-size:0.78rem;color:#1a6b3a;flex:1}
+.editor-exit{background:none;border:1px solid #9ddbb9;border-radius:4px;padding:0.22rem 0.6rem;font-size:0.72rem;color:#1a6b3a;cursor:pointer;font-family:var(--font);transition:background 150ms}
+.editor-exit:hover{background:#d0f0dc}
+
+/* CODE ERROR */
+.code-error{font-size:0.75rem;color:#c0392b;margin-top:0.4rem;display:none}
+.code-error.show{display:block}
+
+/* CONFIRM */
+.confirm-overlay{display:none;position:fixed;inset:0;background:rgba(5,48,87,0.35);z-index:300;align-items:center;justify-content:center}
+.confirm-overlay.open{display:flex}
+.confirm-box{background:var(--w);border-radius:10px;padding:1.75rem;max-width:380px;width:100%;margin:1rem;text-align:center;box-shadow:0 12px 40px rgba(5,48,87,0.18)}
+.confirm-title{font-size:1rem;color:var(--wb);margin-bottom:0.5rem}
+.confirm-desc{font-size:0.82rem;color:var(--cg);margin-bottom:1.5rem;line-height:1.5}
+.confirm-actions{display:flex;gap:0.6rem;justify-content:center}
+
+/* ── DETAIL PANEL ── */
+.detail-overlay{display:none;position:fixed;inset:0;background:rgba(5,48,87,0.22);z-index:200}
+.detail-overlay.open{display:block}
+.detail-panel{position:fixed;top:0;right:0;bottom:0;width:460px;background:var(--w);box-shadow:-6px 0 36px rgba(5,48,87,0.1);z-index:201;overflow-y:auto;transform:translateX(100%);transition:transform 300ms cubic-bezier(0.4,0,0.2,1)}
+.detail-panel.open{transform:translateX(0)}
+.detail-header{padding:1.4rem;border-bottom:1px solid var(--lt);position:sticky;top:0;background:var(--w);z-index:1}
+.detail-header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:0.75rem;margin-bottom:0.75rem}
+.detail-close{background:none;border:1px solid #e8e6e1;border-radius:5px;padding:0.28rem 0.6rem;font-size:0.75rem;color:var(--cg);cursor:pointer;font-family:var(--font);transition:background 150ms;white-space:nowrap}
+.detail-close:hover{background:var(--ow)}
+.detail-admin-btns{display:none;gap:0.4rem}
+.admin-mode .detail-admin-btns,.editor-mode .detail-admin-btns{display:flex}
+
+.detail-label{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--cg);margin-bottom:0.35rem}
+.detail-title{font-size:1.2rem;color:var(--wb);margin-bottom:0.3rem}
+.detail-desc{font-size:0.82rem;color:var(--cg);line-height:1.6}
+.detail-body{padding:0}
+.detail-meta{display:flex;gap:0.7rem;padding:1.1rem 1.4rem;border-bottom:1px solid var(--ow);flex-wrap:wrap}
+.meta-item{display:flex;align-items:center;gap:0.35rem;font-size:0.75rem;color:var(--cg);background:var(--ow);padding:0.28rem 0.6rem;border-radius:4px}
+
+/* ── DETAIL TABS (Lessons / All Materials) ── */
+.detail-tabs{display:flex;border-bottom:1px solid var(--lt);background:var(--w)}
+.detail-tab{flex:1;padding:0.65rem 0;font-size:0.77rem;color:var(--cg);cursor:pointer;text-align:center;border:none;background:none;font-family:var(--font);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color 150ms}
+.detail-tab.active{color:var(--wb);border-bottom-color:var(--wb)}
+.detail-pane{display:none;padding:1.25rem 1.4rem}
+.detail-pane.active{display:block}
+
+/* ── LESSON ITEMS IN DETAIL ── */
+.step-item{border-radius:8px;overflow:hidden;margin-bottom:0.75rem;border:1px solid #e8e6e1;background:var(--w)}
+.step-header{display:flex;align-items:center;gap:0.7rem;padding:0.85rem 0.9rem;cursor:pointer;transition:background 150ms}
+.step-header:hover{background:#f9f8f6}
+.step-circle{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--lt);display:flex;align-items:center;justify-content:center;font-size:0.62rem;color:var(--cg);flex-shrink:0;transition:all 150ms;cursor:pointer}
+.step-circle.done{background:var(--wb);border-color:var(--wb);color:var(--nt)}
+.step-text{font-size:0.85rem;color:var(--wb);flex:1;line-height:1.4}
+.step-text.done{color:var(--cg);text-decoration:line-through}
+.step-badges{display:flex;align-items:center;gap:0.3rem;flex-shrink:0}
+.step-badge{font-size:0.6rem;padding:0.12rem 0.4rem;border-radius:3px;white-space:nowrap}
+.badge-video{background:#EEF4FF;color:#2257B5}
+.badge-material{background:#F0F8EF;color:#2a7a1f}
+.step-chevron{font-size:0.7rem;color:var(--cg);transition:transform 200ms;flex-shrink:0}
+.step-chevron.open{transform:rotate(180deg)}
+
+/* EXPANDABLE CONTENT inside step */
+.step-expand{display:none;border-top:1px solid var(--ow)}
+.step-expand.open{display:block}
+
+/* video section */
+.step-video-section{padding:0.8rem 0.9rem;border-bottom:1px solid var(--ow)}
+.step-section-label{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--cg);margin-bottom:0.55rem;display:flex;align-items:center;gap:0.35rem}
+.step-section-label::before{content:'';display:inline-block;width:3px;height:10px;background:var(--wb);border-radius:1px}
+.video-frame-wrap{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:6px;background:#000}
+.video-frame-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:6px}
+.video-link{font-size:0.78rem;color:var(--wb);text-decoration:none;display:inline-flex;align-items:center;gap:0.3rem}
+.video-link:hover{text-decoration:underline}
+
+/* materials list in step */
+.step-materials-list{padding:0.8rem 0.9rem}
+.material-item{display:flex;align-items:center;gap:0.6rem;padding:0.55rem 0.65rem;background:var(--ow);border-radius:6px;margin-bottom:0.4rem;text-decoration:none;transition:background 150ms;border:1px solid transparent}
+.material-item:hover{background:#ece9e3;border-color:#d0ccc5}
+.material-item:last-child{margin-bottom:0}
+.mat-type-pill{font-size:0.6rem;padding:0.12rem 0.5rem;border-radius:3px;white-space:nowrap;flex-shrink:0;font-family:var(--font)}
+.mat-article{background:#EEF4FF;color:#2257B5}
+.mat-pdf{background:#FEF3E8;color:#b35c00}
+.mat-template{background:#F0F8EF;color:#2a7a1f}
+.mat-tool{background:#F5F0FE;color:#5b30a6}
+.mat-guide{background:#FFF4E0;color:#B56E00}
+.mat-other{background:var(--ow);color:var(--cg)}
+.mat-label{font-size:0.82rem;color:var(--wb);flex:1;line-height:1.3}
+.mat-arrow{font-size:0.7rem;color:var(--cg);flex-shrink:0}
+
+/* ── ALL MATERIALS TAB ── */
+.all-mat-module{margin-bottom:1.5rem}
+.all-mat-module-title{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--cg);margin-bottom:0.5rem;display:flex;align-items:center;gap:0.5rem}
+.all-mat-module-icon{font-size:0.9rem}
+.all-mat-lesson{margin-bottom:0.75rem}
+.all-mat-lesson-name{font-size:0.8rem;color:var(--wb);margin-bottom:0.35rem;padding-left:0.5rem;border-left:2px solid var(--lt)}
+.no-materials-msg{text-align:center;padding:2rem 1rem;color:var(--cg);font-size:0.85rem;line-height:1.6}
+
+.complete-btn{margin:0 1.4rem 1.4rem;display:block;width:calc(100% - 2.8rem);background:var(--wb);border:none;border-radius:6px;padding:0.68rem;font-family:var(--font);font-size:0.85rem;color:var(--w);cursor:pointer;transition:opacity 150ms}
+.complete-btn:hover{opacity:0.87}
+.complete-btn:disabled{opacity:0.45;cursor:default}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.4rem;right:1.4rem;background:var(--wb);color:var(--w);padding:0.65rem 1.1rem;border-radius:6px;font-size:0.8rem;z-index:400;opacity:0;transform:translateY(6px);transition:opacity 250ms,transform 250ms;pointer-events:none;max-width:300px}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* EMPTY */
+.empty-state{grid-column:1/-1;text-align:center;padding:3rem 1rem;color:var(--cg)}
+.empty-icon{font-size:2.2rem;margin-bottom:0.9rem;opacity:0.35}
+.empty-text{font-size:0.87rem;line-height:1.5}
+
+@media(max-width:640px){
+  header{padding:0.85rem 1rem}
+  .hero{padding:1.4rem 1rem 0}
+  .prog-band{padding:0.65rem 1rem}
+  .main{padding:1.4rem 1rem}
+  .hero-title{font-size:1.35rem}
+  .hero-stats{gap:1rem}
+  .detail-panel{width:100%}
+  .form-row{grid-template-columns:1fr}
+  .editor-banner{padding:0.5rem 1rem}
+}
+
+/* LOGIN MODAL */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.logout-btn{background:none;border:1px solid var(--lt);border-radius:4px;padding:0.22rem 0.6rem;font-size:0.68rem;color:var(--cg);cursor:pointer;font-family:var(--font);transition:background 150ms}
+.logout-btn:hover{background:var(--ow)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="h-left">
+    <svg width="96" height="19" viewBox="0 0 572 110" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Blend">
+      <path d="M0 90.2812V25.1138H48.9904C64.5239 25.1138 70.3146 32.0074 70.3146 41.3827C70.3146 48.552 66.2703 53.8831 59.2848 56.4567C67.4652 58.3869 74.0831 62.9826 74.0831 72.5417C74.0831 83.2957 67.1895 90.2812 53.1265 90.2812H0ZM12.3165 81.0898H49.2661C56.895 81.0898 61.307 78.1485 61.307 71.163C61.307 63.626 55.4244 61.4201 49.2661 61.4201H12.3165V81.0898ZM12.3165 53.5154H45.5896C52.2074 53.5154 58.0899 51.2176 58.0899 43.7725C58.0899 37.1546 53.6781 34.3053 45.5896 34.3053H12.3165V53.5154Z" fill="#053057"/>
+      <path d="M79.532 90.2812V16.7496H91.6647V90.2812H79.532Z" fill="#053057"/>
+      <path d="M136.308 92.1195C112.778 92.1195 98.4392 81.3655 98.4392 63.1664C98.4392 44.9674 113.054 34.1215 135.665 34.1215C158.459 34.1215 172.338 45.335 172.338 67.5783H111.583C113.421 77.2293 122.245 82.3766 136.676 82.3766C148.533 82.3766 156.529 78.7 158.919 72.4498H171.511C168.202 84.7663 156.161 92.1195 136.308 92.1195ZM111.767 58.1111H159.195C156.989 48.1844 148.9 43.7725 135.756 43.7725C122.521 43.7725 113.973 48.3682 111.767 58.1111Z" fill="#053057"/>
+      <path d="M178.454 90.2812V35.9598H191.322V47.7248C198.308 38.9929 209.062 34.1215 223.033 34.1215C240.497 34.1215 251.159 41.1989 251.159 62.6149V90.2812H238.291V66.9349C238.291 50.9418 232.041 44.8755 217.242 44.8755C201.893 44.8755 191.322 53.2397 191.322 67.3945V90.2812H178.454Z" fill="#053057"/>
+      <path d="M320.105 90.2812V78.8838C314.499 87.248 304.02 92.2114 290.969 92.2114C270.747 92.2114 257.696 80.814 257.696 63.2584C257.696 45.7027 270.747 34.2134 290.969 34.2134C304.02 34.2134 314.499 39.1768 320.105 47.6329V16.7496H332.146V90.2812H320.105ZM271.023 63.2584C271.023 74.2881 280.123 81.4574 294.829 81.4574C310.546 81.4574 320.105 74.2881 320.105 63.2584C320.105 52.1367 310.546 44.9674 294.829 44.9674C280.123 44.9674 271.023 52.1367 271.023 63.2584Z" fill="#053057"/>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M376.721 38.4244L377.454 70.7403V70.7952C377.454 73.5762 378.918 76.7863 382.791 80.2685C386.661 83.7493 392.535 87.1071 400.208 90.0267C415.519 95.8531 436.998 99.5602 460.963 99.5602C484.928 99.5602 506.407 95.8569 521.718 90.0325C529.391 87.1139 535.264 83.7567 539.135 80.2756C543.006 76.7935 544.472 73.5813 544.472 70.7952C544.472 68.0091 543.006 64.797 539.135 61.3149C538.756 60.974 538.358 60.6344 537.94 60.2962C534.003 62.7131 529.451 64.8785 524.445 66.7826C507.772 73.1251 485.067 76.9461 460.23 76.9461C443.554 76.9461 431.366 76.1549 419.478 73.4773C407.648 70.8129 396.353 66.3346 381.399 59.2516C380.589 58.91 379.132 58.0422 378.58 56.082C377.991 53.9873 378.979 52.4261 379.22 52.0651C379.567 51.5471 379.934 51.2188 380.073 51.0983C380.251 50.943 380.406 50.8307 380.499 50.7665C380.797 50.5595 381.07 50.4207 381.138 50.386L381.145 50.3827C381.354 50.2765 381.579 50.1761 381.754 50.0997C382.14 49.9319 382.672 49.714 383.317 49.4597C384.619 48.9458 386.508 48.2337 388.87 47.3913C393.597 45.7058 400.276 43.4782 408.031 41.2555C423.442 36.8381 443.498 32.322 460.963 32.322C485.8 32.322 508.505 36.1429 525.178 42.4854C529.827 44.2541 534.086 46.2483 537.824 48.46C538.021 48.2914 538.214 48.1224 538.402 47.9532C542.274 44.4711 543.739 41.2589 543.739 38.4728C543.739 35.6867 542.274 32.4746 538.402 28.9925C534.532 25.5113 528.658 22.1541 520.986 19.2355C505.675 13.4112 484.196 9.7078 460.23 9.7078C436.265 9.7078 414.786 13.4112 399.475 19.2355C391.803 22.1541 385.929 25.5113 382.058 28.9925C378.209 32.4544 376.738 35.6495 376.721 38.4244ZM545.848 54.2902C550.405 49.89 553.459 44.5616 553.459 38.4728C553.459 31.9736 549.979 26.3407 544.907 21.7783C539.833 17.2148 532.765 13.3279 524.445 10.163C507.772 3.8205 485.067 -0.000427246 460.23 -0.000427246C435.394 -0.000427246 412.688 3.8205 396.015 10.163C387.696 13.3279 380.628 17.2148 375.554 21.7783C370.482 26.3407 367.001 31.9736 367.001 38.4728V38.5277L367.734 70.8544C367.755 77.3257 371.231 82.9363 376.287 87.4833C381.36 92.0456 388.428 95.9329 396.747 99.0988C413.42 105.443 436.125 109.268 460.963 109.268C485.8 109.268 508.505 105.448 525.178 99.105C533.497 95.9401 540.565 92.0532 545.639 87.4897C550.711 82.9273 554.192 77.2944 554.192 70.7952C554.192 64.3857 550.807 58.8188 545.848 54.2902ZM528.461 54.4534C526.398 53.4509 524.148 52.4824 521.718 51.5579C506.407 45.7335 484.928 42.0302 460.963 42.0302C444.879 42.0302 425.871 46.242 410.712 50.5871C405.077 52.2022 400.029 53.8194 395.935 55.2126C405.589 59.4147 413.531 62.1858 421.616 64.0068C432.468 66.4509 443.82 67.2378 460.23 67.2378C484.196 67.2378 505.675 63.5345 520.986 57.7101C523.707 56.675 526.202 55.5848 528.461 54.4534Z" fill="#053057"/>
+    </svg>
+    <div class="h-div"></div>
+    <span class="h-prog">Learning Hub</span>
+  </div>
+  <div class="h-right">
+    <div class="xp-badge"><span class="xp-dot"></span><span id="total-xp">0 XP</span></div>
+    
+    <div class="user-chip"><div class="avatar" id="user-avatar">PM</div><span id="user-name">AI PM</span></div>
+    <button class="logout-btn" onclick="changeName()">Change name</button>
+  </div>
+</header>
+
+
+<!-- HERO -->
+<div class="hero">
+  <a class="back-link" href="index.html">← All Programs</a>
+  <div class="hero-content">
+    <div>
+      <div class="hero-label">Advanced Track</div>
+      <h1 class="hero-title">Advanced Delivery</h1>
+      <p class="hero-subtitle">Master advanced AI delivery techniques — from responsible AI governance to cross-functional execution. Complete all modules to earn your Advanced certification.</p>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num" id="stat-modules">5</div><div class="stat-label">Modules</div></div>
+      <div class="stat"><div class="stat-num" id="stat-completed">0</div><div class="stat-label">Completed</div></div>
+      <div class="stat"><div class="stat-num" id="stat-total-xp">850</div><div class="stat-label">Total XP</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESS BAND -->
+<div class="prog-band">
+  <span class="prog-label">Overall progress</span>
+  <div class="prog-track"><div class="prog-fill" id="overall-progress" style="width:0%"></div></div>
+  <span class="prog-pct" id="progress-pct">0%</span>
+  <div class="rank-pill">✦ <span id="rank-label">Learner</span></div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="sec-header">
+    <span class="sec-title">Learning Modules</span>
+    <div class="sec-actions">
+      
+      <button class="add-btn" id="add-module-btn" onclick="openAddModal()">+ Add Module</button>
+    </div>
+  </div>
+  <div class="modules-grid" id="modules-grid"></div>
+</main>
+
+
+<div class="modal-overlay" id="code-entry-modal">
+  <div class="modal modal-sm" role="dialog" aria-modal="true" aria-labelledby="code-entry-heading">
+    <div class="modal-header">
+      <div><h2 class="modal-title" id="code-entry-heading">Enter Access Code</h2><p class="modal-subtitle">Enter the code shared by your Admin to unlock editor access</p></div>
+      <button class="modal-close" onclick="closeCodeEntryModal()" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-field">
+        <label class="form-label" for="code-input">Access code</label>
+        <input type="text" id="code-input" class="form-input" placeholder="e.g. BLN-4X9K" maxlength="10" style="letter-spacing:0.12em;text-transform:uppercase;font-size:1rem">
+        <div class="code-error" id="code-error">Invalid or already used code. Please check with your Admin.</div>
+      </div>
+      <div class="form-field"><label class="form-label" for="code-name-input">Your name</label><input type="text" id="code-name-input" class="form-input" placeholder="Your full name"></div>
+    </div>
+    <div class="modal-footer"><div></div><div class="modal-footer-right"><button class="btn-cancel" onclick="closeCodeEntryModal()">Cancel</button><button class="btn-green" onclick="submitAccessCode()">Unlock Editor Access</button></div></div>
+  </div>
+</div>
+
+<!-- ══ ADD / EDIT MODULE MODAL ══ -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-heading">
+    <div class="modal-header">
+      <div><h2 class="modal-title" id="modal-heading">Add Learning Module</h2><p class="modal-subtitle" id="modal-subtitle">Define the topic, lessons, videos, and learning materials</p></div>
+      <button class="modal-close" onclick="closeAddModal()" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="admin-only-fields">
+        <div class="form-row">
+          <div class="form-field"><label class="form-label" for="mod-title">Module title</label><input type="text" id="mod-title" class="form-input" placeholder="e.g. Ethics & Responsible AI"></div>
+          <div class="form-field"><label class="form-label" for="mod-icon">Icon</label><select id="mod-icon" class="form-select"><option value="🤖">🤖 AI / Robot</option><option value="📊">📊 Data</option><option value="🗺️">🗺️ Planning</option><option value="⚡">⚡ Agile</option><option value="💬">💬 Communication</option><option value="🔐">🔐 Risk</option><option value="🧪">🧪 Research</option><option value="🎯">🎯 Goals</option><option value="🔧">🔧 Tools</option><option value="📚">📚 Learning</option><option value="🧠">🧠 Strategy</option><option value="🌐">🌐 Global</option></select></div>
+        </div>
+        <div class="form-field"><label class="form-label" for="mod-desc">Description</label><textarea id="mod-desc" class="form-textarea" placeholder="What will learners understand after completing this module?"></textarea></div>
+        <div class="form-row">
+          <div class="form-field"><label class="form-label" for="mod-level">Level</label><select id="mod-level" class="form-select"><option value="novice">Novice</option><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option></select></div>
+          <div class="form-field"><label class="form-label" for="mod-xp">XP reward</label><input type="number" id="mod-xp" class="form-input" value="150" min="10" max="500" step="10"></div>
+        </div>
+      </div>
+      <div id="editor-locked-notice" style="display:none;background:var(--ow);border-radius:6px;padding:0.75rem 0.9rem;margin-bottom:1rem;font-size:0.78rem;color:var(--cg)">ℹ️ Module title, description, level, and XP are managed by Admin. You can update lessons, videos, and materials below.</div>
+      <div class="form-field">
+        <label class="form-label">Lessons, Videos &amp; Materials</label>
+        <div class="steps-builder" id="steps-builder"></div>
+        <button class="add-step-btn" id="add-step-btn" onclick="addStepField()">+ Add lesson</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-del" id="modal-del-btn" style="display:none" onclick="confirmDeleteFromModal()">Delete Module</button>
+      <div class="modal-footer-right"><button class="btn-cancel" onclick="closeAddModal()">Cancel</button><button class="btn-save" onclick="saveModule()">Save Module</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-title">Delete this module?</div>
+    <p class="confirm-desc">This will permanently remove the module and all associated progress. This cannot be undone.</p>
+    <div class="confirm-actions"><button class="btn-cancel" onclick="closeConfirm()">Cancel</button><button class="btn-del" onclick="executeDelete()">Yes, delete</button></div>
+  </div>
+</div>
+
+<!-- DETAIL PANEL -->
+<div class="detail-overlay" id="detail-overlay" onclick="closeDetail()"></div>
+<div class="detail-panel" id="detail-panel">
+  <div class="detail-header">
+    <div class="detail-header-top">
+      <button class="detail-close" onclick="closeDetail()">← Back</button>
+      <div class="detail-admin-btns">
+        <button class="icon-btn" onclick="editCurrentModule()" title="Edit">✏️ Edit</button>
+        <button class="icon-btn del" onclick="deleteCurrentModule()" title="Delete">🗑 Delete</button>
+      </div>
+    </div>
+    <div class="detail-label" id="detail-label"></div>
+    <h2 class="detail-title" id="detail-title"></h2>
+    <p class="detail-desc" id="detail-desc"></p>
+  </div>
+  <div class="detail-body">
+    <div class="detail-meta" id="detail-meta"></div>
+    <!-- TABS -->
+    <div class="detail-tabs">
+      <button class="detail-tab active" id="tab-lessons" onclick="switchDetailTab('lessons',this)">Lessons</button>
+      <button class="detail-tab" id="tab-materials" onclick="switchDetailTab('materials',this)">Learning Materials</button>
+    </div>
+    <!-- LESSONS PANE -->
+    <div class="detail-pane active" id="pane-lessons">
+      <div id="detail-steps"></div>
+      <button class="complete-btn" id="complete-btn" onclick="completeModule()">Mark as Complete</button>
+    </div>
+    <!-- MATERIALS PANE -->
+    <div class="detail-pane" id="pane-materials">
+      <div id="all-materials-list"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+
+<script>
+const MK='blend_lrn_advanced_modules',PK='blend_lrn_advanced_progress';
+
+let modules=[],progress={};
+let currentModuleId=null,editingId=null,pendingDeleteId=null,stepCounter=0;
+
+/* ─── MATERIAL TYPE CONFIG ─── */
+const MAT_TYPES=[
+  {val:'Article',label:'Article',cls:'mat-article'},
+  {val:'PDF',label:'PDF',cls:'mat-pdf'},
+  {val:'Template',label:'Template',cls:'mat-template'},
+  {val:'Tool',label:'Tool',cls:'mat-tool'},
+  {val:'Guide',label:'Guide',cls:'mat-guide'},
+  {val:'Other',label:'Other',cls:'mat-other'},
+];
+function matCls(type){return(MAT_TYPES.find(t=>t.val===type)||MAT_TYPES[MAT_TYPES.length-1]).cls;}
+
+/* ─── DEFAULT DATA ─── */
+const DEFAULT_MODULES=[
+  {id:1,title:'Responsible AI & Governance',desc:'Understand ethical AI frameworks, the global regulatory landscape, bias detection, and how to build governance structures that enable responsible deployment.',level:'intermediate',icon:'⚖️',xp:200,
+    steps:[
+      {title:'AI ethics principles: Fairness, accountability, transparency, and safety',
+       video:'https://www.youtube.com/watch?v=7cFYCWl3GhI',
+       materials:[
+         {type:'Guide',label:'Google — Responsible AI practices',url:'https://ai.google/responsibility/responsible-ai-practices/'},
+         {type:'Article',label:'Partnership on AI — core principles',url:'https://partnershiponai.org/'},
+         {type:'Guide',label:'Microsoft — Responsible AI standard (PDF)',url:'https://blogs.microsoft.com/wp-content/uploads/prod/sites/5/2022/06/Microsoft-Responsible-AI-Standard-v2-General-Requirements-3.pdf'},
+         {type:'Article',label:'MIT Technology Review — Ethics in AI special report',url:'https://www.technologyreview.com/supertopic/ai-ethics-issue/'}
+       ]},
+      {title:'The EU AI Act: What project managers must know',
+       video:'https://www.youtube.com/watch?v=_tqIEFAuRao',
+       materials:[
+         {type:'Guide',label:'EU AI Act — official text summary',url:'https://artificialintelligenceact.eu/'},
+         {type:'Article',label:'Clifford Chance — EU AI Act practical guide',url:'https://www.cliffordchance.com/insights/resources/hubs/the-eu-artificial-intelligence-act.html'},
+         {type:'Article',label:'WEF — Global AI regulation tracker',url:'https://www.weforum.org/agenda/2023/01/davos23-global-ai-regulation/'},
+         {type:'Guide',label:'NIST AI RMF — risk management framework',url:'https://www.nist.gov/artificial-intelligence'}
+       ]},
+      {title:'Bias in AI: Types, detection methods, and mitigation strategies',
+       video:'https://www.youtube.com/watch?v=59bMh59JQDo',
+       materials:[
+         {type:'Article',label:'IBM — AI fairness 360 toolkit',url:'https://aif360.res.ibm.com/'},
+         {type:'Guide',label:'Google — Understanding fairness in ML',url:'https://developers.google.com/machine-learning/crash-course/fairness/types-of-bias'},
+         {type:'Article',label:'MIT — Algorithmic Justice League resources',url:'https://www.ajl.org/'},
+         {type:'Tool',label:'Microsoft — Fairlearn bias assessment tool',url:'https://fairlearn.org/'}
+       ]},
+      {title:'Building an AI ethics review board and governance committee',
+       video:'https://www.youtube.com/watch?v=_tqIEFAuRao',
+       materials:[
+         {type:'Template',label:'AI ethics review checklist template',url:'https://www.smartsheet.com/content/ethics-checklist-template'},
+         {type:'Guide',label:'Deloitte — AI governance framework guide',url:'https://www2.deloitte.com/us/en/pages/deloitte-analytics/articles/ai-institute.html'},
+         {type:'Article',label:'Harvard — Setting up an AI review board',url:'https://hbr.org/2020/01/building-the-ai-powered-organization'}
+       ]},
+      {title:'Explainability and auditability: Making AI decisions transparent',
+       video:'https://www.youtube.com/watch?v=B-c8tIgchu0',
+       materials:[
+         {type:'Tool',label:'SHAP — model explainability library',url:'https://shap.readthedocs.io/en/latest/'},
+         {type:'Guide',label:'Google — What-If Tool for model inspection',url:'https://pair-code.github.io/what-if-tool/'},
+         {type:'Article',label:'DARPA — Explainable AI programme overview',url:'https://www.darpa.mil/program/explainable-artificial-intelligence'},
+         {type:'Article',label:'ICO — Explaining AI decisions (UK regulator guide)',url:'https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/artificial-intelligence/explaining-decisions-made-with-ai/'}
+       ]}
+    ]},
+  {id:2,title:'GenAI Delivery Management',desc:'Lead generative AI projects end to end — from scoping and LLM selection to production deployment, cost management, and ongoing model lifecycle management.',level:'intermediate',icon:'🧠',xp:220,
+    steps:[
+      {title:'Scoping GenAI projects: Use case selection and feasibility assessment',
+       video:'https://www.youtube.com/watch?v=zjkBMFhNj_g',
+       materials:[
+         {type:'Template',label:'GenAI use case scoring matrix (Miro)',url:'https://miro.com/miroverse/ai-project-canvas/'},
+         {type:'Article',label:'McKinsey — Generative AI use cases by function',url:'https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-economic-potential-of-generative-ai'},
+         {type:'Guide',label:'a16z — Building with LLMs: PM guide',url:'https://a16z.com/emerging-architectures-for-llm-applications/'}
+       ]},
+      {title:'LLM selection: Evaluating models for your use case (GPT, Claude, Gemini, Llama)',
+       video:'https://www.youtube.com/watch?v=t0LDDlFhKO0',
+       materials:[
+         {type:'Tool',label:'LMSYS Chatbot Arena — LLM benchmark leaderboard',url:'https://lmarena.ai/'},
+         {type:'Guide',label:'Anthropic — Choosing the right Claude model',url:'https://docs.anthropic.com/en/docs/about-claude/models/overview'},
+         {type:'Article',label:'Hugging Face — Open LLM leaderboard',url:'https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard'},
+         {type:'Article',label:'Andreessen Horowitz — LLM landscape for builders',url:'https://a16z.com/llm-landscape/'}
+       ]},
+      {title:'Prompt management, versioning, and engineering at scale',
+       video:'https://www.youtube.com/watch?v=1bUy-1hGZpI',
+       materials:[
+         {type:'Tool',label:'PromptLayer — prompt versioning and analytics',url:'https://promptlayer.com/'},
+         {type:'Tool',label:'LangSmith — LLM observability platform',url:'https://www.langchain.com/langsmith'},
+         {type:'Guide',label:'Anthropic — Production prompt engineering guide',url:'https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview'},
+         {type:'Article',label:'Riley Goodside — Prompt engineering in production',url:'https://simonwillison.net/2023/Dec/31/llm-reasoning/'}
+       ]},
+      {title:'Fine-tuning vs RAG vs prompt engineering: Choosing the right approach',
+       video:'https://www.youtube.com/watch?v=T-D1OfcDW1M',
+       materials:[
+         {type:'Article',label:'Anyscale — When to fine-tune vs RAG vs prompting',url:'https://www.anyscale.com/blog/fine-tuning-is-for-form-not-facts'},
+         {type:'Guide',label:'AWS — Fine-tuning foundation models guide',url:'https://aws.amazon.com/blogs/machine-learning/fine-tune-a-foundation-model-using-amazon-sagemaker/'},
+         {type:'Article',label:'Databricks — RAG vs fine-tuning decision guide',url:'https://www.databricks.com/blog/fine-tuning-large-language-models-llms'}
+       ]},
+      {title:'Production deployment: Latency, cost, scaling, and monitoring GenAI',
+       video:'https://www.youtube.com/watch?v=9-hjBGxuiEs',
+       materials:[
+         {type:'Guide',label:'Modal — Deploying LLMs to production guide',url:'https://modal.com/docs/guide'},
+         {type:'Article',label:'Eugene Yan — Designing ML systems for production',url:'https://eugeneyan.com/writing/system-design-for-discovery/'},
+         {type:'Tool',label:'LangFuse — LLM cost and performance tracking',url:'https://langfuse.com/'},
+         {type:'Guide',label:'Anthropic — API rate limits and cost optimisation',url:'https://docs.anthropic.com/en/api/getting-started'}
+       ]},
+      {title:'Cost management: Token optimisation and ROI tracking for GenAI',
+       video:'https://www.youtube.com/watch?v=zjkBMFhNj_g',
+       materials:[
+         {type:'Tool',label:'OpenMeter — LLM usage metering',url:'https://openmeter.io/'},
+         {type:'Article',label:'Hamel Husain — Reducing LLM costs in production',url:'https://hamel.dev/blog/posts/evals/'},
+         {type:'Template',label:'GenAI cost tracking spreadsheet template',url:'https://www.smartsheet.com/content/budget-templates'}
+       ]}
+    ]},
+  {id:3,title:'RAG Systems & AI QA',desc:'Understand retrieval-augmented generation architectures, how to evaluate AI output quality, and how to design testing strategies for knowledge-intensive AI applications.',level:'intermediate',icon:'🔍',xp:210,
+    steps:[
+      {title:'RAG architecture fundamentals: How retrieval-augmented generation works',
+       video:'https://www.youtube.com/watch?v=T-D1OfcDW1M',
+       materials:[
+         {type:'Article',label:'LangChain — RAG conceptual guide',url:'https://python.langchain.com/docs/concepts/rag/'},
+         {type:'Guide',label:'AWS — Building RAG applications guide',url:'https://aws.amazon.com/what-is/retrieval-augmented-generation/'},
+         {type:'Article',label:'Pinecone — What is RAG? (visual explainer)',url:'https://www.pinecone.io/learn/retrieval-augmented-generation/'},
+         {type:'Article',label:'Lewis et al — Original RAG research paper',url:'https://arxiv.org/abs/2005.11401'}
+       ]},
+      {title:'Vector databases and embeddings: What PMs need to understand',
+       video:'https://www.youtube.com/watch?v=klTvEwg3oJ4',
+       materials:[
+         {type:'Article',label:'Pinecone — Vector database guide for builders',url:'https://www.pinecone.io/learn/vector-database/'},
+         {type:'Tool',label:'Chroma — open source vector database',url:'https://www.trychroma.com/'},
+         {type:'Guide',label:'Weaviate — Vector search explained simply',url:'https://weaviate.io/blog/what-is-a-vector-database'},
+         {type:'Tool',label:'Qdrant — vector similarity search engine',url:'https://qdrant.tech/'}
+       ]},
+      {title:'Evaluating RAG quality: Faithfulness, relevance, and groundedness',
+       video:'https://www.youtube.com/watch?v=B-c8tIgchu0',
+       materials:[
+         {type:'Tool',label:'Ragas — RAG evaluation framework',url:'https://docs.ragas.io/'},
+         {type:'Article',label:'Weights & Biases — Evaluating LLM outputs guide',url:'https://wandb.ai/fully-connected/llm-eval'},
+         {type:'Guide',label:'Anthropic — Model evaluation best practices',url:'https://docs.anthropic.com/en/docs/test-and-evaluate/eval-intro'},
+         {type:'Article',label:'TREC RAG track — evaluation benchmarks',url:'https://docs.ragas.io/'}
+       ]},
+      {title:'AI QA frameworks: Test case design for LLM-powered features',
+       video:'https://www.youtube.com/watch?v=dOxUroR57xs',
+       materials:[
+         {type:'Guide',label:'Google — Testing ML systems at scale',url:'https://testing.googleblog.com/2023/04/level-up-your-test-automation-with-ai.html'},
+         {type:'Article',label:'Hamel Husain — Building LLM evaluation pipelines',url:'https://hamel.dev/blog/posts/evals/'},
+         {type:'Tool',label:'PromptFoo — LLM red-teaming and testing tool',url:'https://www.promptfoo.dev/'},
+         {type:'Template',label:'AI QA test plan template',url:'https://www.atlassian.com/software/jira/templates/software-development'}
+       ]},
+      {title:'Hallucination detection and mitigation: A practical PM playbook',
+       video:'https://www.youtube.com/watch?v=zjkBMFhNj_g',
+       materials:[
+         {type:'Article',label:'Simon Willison — The problem of LLM hallucination',url:'https://simonwillison.net/2023/Dec/31/llm-reasoning/'},
+         {type:'Tool',label:'Guardrails AI — output validation library',url:'https://www.guardrailsai.com/'},
+         {type:'Guide',label:'Anthropic — Reducing hallucination with Claude',url:'https://docs.anthropic.com/en/docs/test-and-evaluate/strengthen-guardrails/reduce-hallucinations'},
+         {type:'Article',label:'AAAI — Factual consistency evaluation survey',url:'https://arxiv.org/abs/2305.14069'}
+       ]}
+    ]},
+  {id:4,title:'AI Risk & Compliance',desc:'Build robust AI risk registers, embed compliance checkpoints into delivery workflows, and design audit-ready processes for AI systems in regulated industries.',level:'intermediate',icon:'🛡️',xp:190,
+    steps:[
+      {title:'AI risk taxonomy for delivery teams: What can go wrong and when',
+       video:'https://www.youtube.com/watch?v=7cFYCWl3GhI',
+       materials:[
+         {type:'Guide',label:'NIST — AI Risk Management Framework (RMF 1.0)',url:'https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-1.pdf'},
+         {type:'Template',label:'AI risk register template (Excel)',url:'https://www.smartsheet.com/content/risk-register-templates'},
+         {type:'Article',label:'McKinsey — AI risk and compliance 2024',url:'https://www.mckinsey.com/capabilities/risk-and-resilience/our-insights/the-risk-based-approach-to-ai-governance'},
+         {type:'Guide',label:'ISO 42001 — AI management system standard',url:'https://www.iso.org/standard/81230.html'}
+       ]},
+      {title:'Embedding compliance gates into the AI delivery lifecycle',
+       video:'https://www.youtube.com/watch?v=_tqIEFAuRao',
+       materials:[
+         {type:'Template',label:'AI compliance checklist by lifecycle stage',url:'https://www.atlassian.com/software/confluence/templates/decision'},
+         {type:'Guide',label:'FCA — AI and ML in financial services guidance',url:'https://www.fca.org.uk/publications/discussion-papers/dp22-4-artificial-intelligence-and-machine-learning'},
+         {type:'Article',label:'Deloitte — Operationalising responsible AI',url:'https://www2.deloitte.com/us/en/pages/technology/articles/responsible-ai.html'}
+       ]},
+      {title:'Data privacy in AI: GDPR, data minimisation, and the right to explanation',
+       video:'https://www.youtube.com/watch?v=_tqIEFAuRao',
+       materials:[
+         {type:'Guide',label:'ICO — AI and data protection guide',url:'https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/artificial-intelligence/'},
+         {type:'Article',label:'GDPR.eu — AI processing under GDPR',url:'https://gdpr.eu/'},
+         {type:'Template',label:'Data processing impact assessment (DPIA) template',url:'https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/accountability-and-governance/data-protection-impact-assessments-dpias/'}
+       ]},
+      {title:'Audit trails and model cards: Building explainable AI documentation',
+       video:'https://www.youtube.com/watch?v=B-c8tIgchu0',
+       materials:[
+         {type:'Guide',label:'Google — Model cards for model reporting',url:'https://modelcards.withgoogle.com/'},
+         {type:'Template',label:'Model card template (Hugging Face)',url:'https://huggingface.co/docs/hub/model-card-guide'},
+         {type:'Article',label:'Mitchell et al — Model cards research paper',url:'https://arxiv.org/abs/1810.03993'}
+       ]},
+      {title:'AI incident response: What to do when a model fails in production',
+       video:'https://www.youtube.com/watch?v=_tqIEFAuRao',
+       materials:[
+         {type:'Template',label:'AI incident response playbook template',url:'https://www.atlassian.com/incident-management/incident-response/plans'},
+         {type:'Guide',label:'MITRE ATLAS — AI adversarial incident taxonomy',url:'https://atlas.mitre.org/'},
+         {type:'Article',label:'AI Incident Database — real AI failure case studies',url:'https://incidentdatabase.ai/'}
+       ]}
+    ]},
+  {id:5,title:'Cross-functional AI Execution',desc:'Lead AI delivery across engineering, data science, legal, and business — aligning incentives, resolving blockers, running effective steering committees, and measuring progress.',level:'intermediate',icon:'🤝',xp:230,
+    steps:[
+      {title:'AI team structures: Centralised CoE, embedded, and hybrid models',
+       video:'https://www.youtube.com/watch?v=_N-PxKoA4wA',
+       materials:[
+         {type:'Article',label:'McKinsey — How to organise your AI team',url:'https://www.mckinsey.com/capabilities/quantumblack/our-insights/how-to-build-an-effective-analytics-organization'},
+         {type:'Guide',label:'DataCamp — Building a data team guide',url:'https://www.datacamp.com/blog/data-science-team-structure'},
+         {type:'Article',label:'Towards Data Science — ML team org structures',url:'https://towardsdatascience.com/how-to-structure-a-data-science-team-as-a-business-grows-78e7eb73d32d'}
+       ]},
+      {title:'Aligning data science and engineering: Bridging the handoff gap',
+       video:'https://www.youtube.com/watch?v=9-hjBGxuiEs',
+       materials:[
+         {type:'Guide',label:'MLOps community — DS-engineering collaboration',url:'https://mlops.community/'},
+         {type:'Article',label:'Google — Practitioners guide to MLOps',url:'https://services.google.com/fh/files/misc/practitioners_guide_to_mlops_whitepaper.pdf'},
+         {type:'Tool',label:'DVC — data version control for ML teams',url:'https://dvc.org/'}
+       ]},
+      {title:'Working with legal and compliance in AI delivery',
+       video:'https://www.youtube.com/watch?v=_tqIEFAuRao',
+       materials:[
+         {type:'Guide',label:'Future of Privacy Forum — AI legal checklist',url:'https://fpf.org/'},
+         {type:'Article',label:'Clifford Chance — AI contracts and liability',url:'https://www.cliffordchance.com/insights/resources/hubs/the-eu-artificial-intelligence-act.html'},
+         {type:'Template',label:'AI vendor due diligence questionnaire',url:'https://www.smartsheet.com/content/vendor-assessment-templates'}
+       ]},
+      {title:'Running effective AI steering committees and programme boards',
+       video:'https://www.youtube.com/watch?v=ER8lvPl_YOM',
+       materials:[
+         {type:'Template',label:'AI steering committee terms of reference template',url:'https://www.atlassian.com/software/confluence/templates/meeting-notes'},
+         {type:'Guide',label:'PMI — Programme governance best practices',url:'https://www.pmi.org/learning/library/program-governance-structure-7207'},
+         {type:'Article',label:'HBR — Running better meetings with AI',url:'https://hbr.org/2023/03/how-ai-is-changing-the-way-companies-are-organized'}
+       ]},
+      {title:'Measuring and communicating AI delivery progress to senior leaders',
+       video:'https://www.youtube.com/watch?v=m0AW0KxCVGI',
+       materials:[
+         {type:'Template',label:'AI programme dashboard template (PowerBI)',url:'https://learn.microsoft.com/en-us/power-bi/create-reports/sample-datasets'},
+         {type:'Guide',label:'McKinsey — AI metrics that matter to the board',url:'https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai'},
+         {type:'Template',label:'AI RAG status report template',url:'https://www.atlassian.com/software/confluence/templates/status-report'}
+       ]}
+    ]}
+];
+
+async function load(){
+  try{
+    modules=await apiFetch('/api/modules/advanced');
+    modules.forEach(mod=>{
+      mod.steps=mod.steps.map(s=>{
+        if(typeof s==='string') return{title:s,video:'',materials:[]};
+        return{...s,materials:s.materials||[]};
+      });
+    });
+    progress=await apiFetch('/api/progress/advanced');
+  }catch(e){modules=[];progress={};}
+}
+function saveProgress(){
+  apiFetch('/api/progress/advanced',{method:'PUT',body:JSON.stringify(progress)}).catch(()=>{});
+}
+function saveModules(){
+  apiFetch('/api/modules/advanced',{method:'PUT',body:JSON.stringify(modules)}).catch(()=>{});
+}
+function getProgress(id){return progress[id]||{completed:false,stepsDone:[]};}
+
+
+
+
+
+
+
+
+/* ─── RENDER GRID ─── */
+function render(){
+  const grid=document.getElementById('modules-grid');grid.innerHTML='';
+  if(!modules.length){grid.innerHTML='<div class="empty-state"><div class="empty-icon">📂</div><p class="empty-text">No modules yet. Enable Admin mode and click "+ Add Module".</p></div>';updateStats();return;}
+  modules.forEach(mod=>{
+    const prog=getProgress(mod.id);
+    const done=prog.stepsDone.length,total=mod.steps.length;
+    const pct=total>0?Math.round((done/total)*100):0;
+    const hasVid=mod.steps.some(s=>s.video&&s.video.trim());
+    const hasMat=mod.steps.some(s=>s.materials&&s.materials.length);
+    const lvCls=mod.level==='intermediate'?'status-intermediate':mod.level==='beginner'?'status-beginner':'status-novice';
+    const lvLbl=mod.level.charAt(0).toUpperCase()+mod.level.slice(1);
+    const card=document.createElement('div');
+    card.className='module-card'+(prog.completed?' completed':done>0?' active':'');
+    card.onclick=(e)=>{if(!e.target.closest('.card-admin'))openDetail(mod.id);};
+    card.innerHTML=`
+      <div class="card-admin">
+        <button class="icon-btn" onclick="editModule(${mod.id})" title="Edit">✏️</button>
+        <button class="icon-btn del" onclick="promptDelete(${mod.id})" title="Delete">🗑</button>
+      </div>
+      <div class="card-top">
+        <div class="card-icon">${mod.icon}</div>
+        <div class="card-badges">
+          <div class="card-status ${lvCls}"><span class="status-dot"></span>${lvLbl}</div>
+          ${hasVid?'<span class="has-video-tag">▶ video</span>':''}
+          ${hasMat?'<span class="has-material-tag">📎 materials</span>':''}
+        </div>
+      </div>
+      <div class="card-title">${mod.title}</div>
+      <div class="card-desc">${mod.desc}</div>
+      <div class="card-footer">
+        <div class="xp-label"><span class="xp-spark">✦</span> ${mod.xp} XP</div>
+        <div class="steps-label">${total} ${total===1?'lesson':'lessons'}</div>
+      </div>
+      ${total>0?`<div class="card-prog-bar"><div class="card-prog-fill" style="width:${pct}%"></div></div>`:''}`;
+    grid.appendChild(card);
+  });
+  updateStats();
+}
+function updateStats(){
+  const completed=modules.filter(m=>getProgress(m.id).completed).length;
+  const earnedXP=modules.reduce((s,m)=>s+(getProgress(m.id).completed?m.xp:0),0);
+  const totalXP=modules.reduce((s,m)=>s+m.xp,0);
+  const pct=modules.length>0?Math.round((completed/modules.length)*100):0;
+  document.getElementById('stat-modules').textContent=modules.length;
+  document.getElementById('stat-completed').textContent=completed;
+  document.getElementById('stat-total-xp').textContent=totalXP;
+  document.getElementById('total-xp').textContent=earnedXP+' XP';
+  document.getElementById('overall-progress').style.width=pct+'%';
+  document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('rank-label').textContent=earnedXP>=700?'Expert':earnedXP>=400?'Practitioner':earnedXP>=150?'Beginner':'Learner';
+}
+
+/* ─── DETAIL PANEL ─── */
+function switchDetailTab(pane,btn){
+  document.querySelectorAll('.detail-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.detail-pane').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('pane-'+pane).classList.add('active');
+}
+
+function openDetail(id){
+  currentModuleId=id;
+  const mod=modules.find(m=>m.id===id);if(!mod)return;
+  const prog=getProgress(id);
+  document.getElementById('detail-label').textContent=mod.level;
+  document.getElementById('detail-title').textContent=mod.title;
+  document.getElementById('detail-desc').textContent=mod.desc;
+  // reset to Lessons tab
+  document.querySelectorAll('.detail-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.detail-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-lessons').classList.add('active');
+  document.getElementById('pane-lessons').classList.add('active');
+
+  // count total materials across all steps
+  const totalMat=mod.steps.reduce((s,st)=>s+(st.materials?st.materials.length:0),0);
+  document.getElementById('detail-meta').innerHTML=`
+    <div class="meta-item">✦ ${mod.xp} XP</div>
+    <div class="meta-item">${mod.steps.length} ${mod.steps.length===1?'lesson':'lessons'}</div>
+    <div class="meta-item">${mod.icon} ${mod.level.charAt(0).toUpperCase()+mod.level.slice(1)}</div>
+    ${totalMat>0?`<div class="meta-item">📎 ${totalMat} material${totalMat===1?'':'s'}</div>`:''}`;
+
+  /* ── LESSONS PANE ── */
+  const stepsEl=document.getElementById('detail-steps');
+  stepsEl.innerHTML=mod.steps.map((step,i)=>{
+    const done=prog.stepsDone.includes(i);
+    const hasVid=step.video&&step.video.trim();
+    const mats=step.materials||[];
+    const hasMat=mats.length>0;
+    const hasExpand=hasVid||hasMat;
+    const emb=hasVid?getEmbedUrl(step.video):'';
+
+    const videoSection=hasVid?`
+      <div class="step-video-section">
+        <div class="step-section-label">Video</div>
+        ${emb?`<div class="video-frame-wrap"><iframe src="${emb}" allowfullscreen loading="lazy"></iframe></div>`
+             :`<a class="video-link" href="${escHtml(step.video)}" target="_blank">▶ Open video ↗</a>`}
+      </div>`:'' ;
+
+    const matsSection=hasMat?`
+      <div class="step-materials-list">
+        <div class="step-section-label">Learning materials</div>
+        ${mats.map(mat=>`
+          <a class="material-item" href="${escHtml(mat.url)}" target="_blank" rel="noopener">
+            <span class="mat-type-pill ${matCls(mat.type)}">${escHtml(mat.type)}</span>
+            <span class="mat-label">${escHtml(mat.label||mat.url)}</span>
+            <span class="mat-arrow">↗</span>
+          </a>`).join('')}
+      </div>`:'' ;
+
+    return`<div class="step-item">
+      <div class="step-header" onclick="${hasExpand?`toggleStepExpand(${id},${i})`:''}">
+        <div class="step-circle ${done?'done':''}" onclick="event.stopPropagation();toggleStep(${i})">${done?'✓':i+1}</div>
+        <div class="step-text ${done?'done':''}">${step.title}</div>
+        <div class="step-badges">
+          ${hasVid?'<span class="step-badge badge-video">▶</span>':''}
+          ${hasMat?`<span class="step-badge badge-material">📎 ${mats.length}</span>`:''}
+        </div>
+        ${hasExpand?`<span class="step-chevron" id="sc-${id}-${i}">▾</span>`:''}
+      </div>
+      ${hasExpand?`<div class="step-expand" id="svw-${id}-${i}">${videoSection}${matsSection}</div>`:''}
+    </div>`;
+  }).join('');
+
+  /* ── MATERIALS PANE ── */
+  renderAllMaterials(mod);
+
+  const cb=document.getElementById('complete-btn');
+  if(prog.completed){cb.textContent='✓ Completed';cb.disabled=true;}
+  else{cb.textContent='Mark as Complete';cb.disabled=false;}
+  document.getElementById('detail-overlay').classList.add('open');
+  document.getElementById('detail-panel').classList.add('open');
+}
+
+function renderAllMaterials(mod){
+  const el=document.getElementById('all-materials-list');
+  const stepsWithMats=mod.steps.filter(s=>s.materials&&s.materials.length);
+  if(!stepsWithMats.length){
+    el.innerHTML='<div class="no-materials-msg">No learning materials added yet.<br>Edit this module to add article, PDF, template, or tool links to each lesson.</div>';
+    return;
+  }
+  el.innerHTML=stepsWithMats.map((step,origIdx)=>{
+    const i=mod.steps.indexOf(step);
+    return`<div class="all-mat-lesson">
+      <div class="all-mat-lesson-name">Lesson ${i+1} — ${escHtml(step.title)}</div>
+      ${step.materials.map(mat=>`
+        <a class="material-item" href="${escHtml(mat.url)}" target="_blank" rel="noopener">
+          <span class="mat-type-pill ${matCls(mat.type)}">${escHtml(mat.type)}</span>
+          <span class="mat-label">${escHtml(mat.label||mat.url)}</span>
+          <span class="mat-arrow">↗</span>
+        </a>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+function toggleStepExpand(modId,idx){
+  const w=document.getElementById(`svw-${modId}-${idx}`),c=document.getElementById(`sc-${modId}-${idx}`);
+  if(!w)return;
+  const o=w.classList.toggle('open');
+  if(c)c.classList.toggle('open',o);
+}
+function toggleStep(idx){
+  if(!currentModuleId)return;
+  if(!progress[currentModuleId])progress[currentModuleId]={completed:false,stepsDone:[]};
+  const arr=progress[currentModuleId].stepsDone,pos=arr.indexOf(idx);
+  if(pos>-1)arr.splice(pos,1);else arr.push(idx);
+  saveProgress();openDetail(currentModuleId);render();
+}
+function completeModule(){
+  if(!currentModuleId)return;
+  if(!progress[currentModuleId])progress[currentModuleId]={completed:false,stepsDone:[]};
+  const mod=modules.find(m=>m.id===currentModuleId);
+  progress[currentModuleId].completed=true;
+  progress[currentModuleId].stepsDone=mod.steps.map((_,i)=>i);
+  saveProgress();render();openDetail(currentModuleId);
+  showToast('Module complete — '+mod.xp+' XP earned!');
+}
+function closeDetail(){
+  document.getElementById('detail-overlay').classList.remove('open');
+  document.getElementById('detail-panel').classList.remove('open');
+  currentModuleId=null;
+}
+function editCurrentModule(){if(currentModuleId){closeDetail();editModule(currentModuleId);}}
+function deleteCurrentModule(){if(currentModuleId){closeDetail();promptDelete(currentModuleId);}}
+
+/* ─── VIDEO UTILS ─── */
+function getEmbedUrl(url){
+  const yt=url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if(yt)return`https://www.youtube.com/embed/${yt[1]}`;
+  const vm=url.match(/vimeo\.com\/(\d+)/);
+  if(vm)return`https://player.vimeo.com/video/${vm[1]}`;
+  return'';
+}
+
+/* ─── ADD / EDIT MODAL ─── */
+function openAddModal(){
+  editingId=null;
+  document.getElementById('modal-heading').textContent='Add Learning Module';
+  document.getElementById('modal-subtitle').textContent='Define the topic, lessons, videos, and learning materials';
+  document.getElementById('mod-title').value='';document.getElementById('mod-desc').value='';
+  document.getElementById('mod-level').value='novice';document.getElementById('mod-icon').value='📚';
+  document.getElementById('mod-xp').value=150;
+  document.getElementById('modal-del-btn').style.display='none';
+  document.getElementById('admin-only-fields').style.display='block';
+  document.getElementById('editor-locked-notice').style.display='none';
+  document.getElementById('add-step-btn').style.display='block';
+  const builder=document.getElementById('steps-builder');builder.innerHTML='';stepCounter=0;addStepField();
+  document.getElementById('add-modal').classList.add('open');
+}
+function editModule(id){
+  const mod=modules.find(m=>m.id===id);if(!mod)return;
+  editingId=id;
+  document.getElementById('modal-heading').textContent='Edit Module';
+  document.getElementById('modal-subtitle').textContent='Update module content, lessons, videos, and materials';
+  document.getElementById('mod-title').value=mod.title;document.getElementById('mod-desc').value=mod.desc;
+  document.getElementById('mod-level').value=mod.level;document.getElementById('mod-icon').value=mod.icon;
+  document.getElementById('mod-xp').value=mod.xp;
+  document.getElementById('modal-del-btn').style.display='block';
+  document.getElementById('admin-only-fields').style.display='block';
+  document.getElementById('editor-locked-notice').style.display='none';
+  document.getElementById('add-step-btn').style.display='block';
+  const builder=document.getElementById('steps-builder');builder.innerHTML='';stepCounter=0;
+  mod.steps.forEach(s=>addStepField(s.title,s.video||'',s.materials||[]));
+  document.getElementById('add-modal').classList.add('open');
+}
+function closeAddModal(){document.getElementById('add-modal').classList.remove('open');editingId=null;}
+
+/* ─── STEP BUILDER ─── */
+function addStepField(titleVal='',videoVal='',matsVal=[]){
+  stepCounter++;
+  const builder=document.getElementById('steps-builder');
+  const idx=builder.children.length+1;
+  const sc=stepCounter;
+  const row=document.createElement('div');
+  row.className='step-row';row.dataset.sc=sc;
+  row.innerHTML=`
+    <div class="step-row-header">
+      <span class="step-num">${idx}</span>
+      <div class="step-main-fields">
+        <input type="text" class="step-input" placeholder="Lesson ${idx} title" value="${escHtml(titleVal)}">
+        <div class="step-inline-row">
+          <span class="step-inline-label">▶ Video URL</span>
+          <input type="text" class="step-url-input" placeholder="YouTube or Vimeo (optional)" value="${escHtml(videoVal)}">
+        </div>
+      </div>
+      <button class="step-remove" onclick="removeStep(this)" aria-label="Remove step">✕</button>
+    </div>
+    <div class="step-materials-section">
+      <div class="step-materials-title">
+        <span>📎 Learning Materials</span>
+        <button type="button" class="add-material-btn" onclick="addMaterialRow(this)">+ Add link</button>
+      </div>
+      <div class="materials-container"></div>
+      <div class="no-materials-hint" id="no-mat-hint-${sc}">No materials added yet</div>
+    </div>`;
+  builder.appendChild(row);
+  renumberSteps();
+  // pre-fill materials
+  const container=row.querySelector('.materials-container');
+  matsVal.forEach(m=>addMaterialRowToContainer(container,m.type||'Article',m.label||'',m.url||'',sc));
+  updateNoMatHint(row,sc);
+}
+
+function addMaterialRow(btn){
+  const section=btn.closest('.step-materials-section');
+  const container=section.querySelector('.materials-container');
+  const sc=btn.closest('.step-row').dataset.sc;
+  addMaterialRowToContainer(container,'Article','','',sc);
+  updateNoMatHint(btn.closest('.step-row'),sc);
+}
+
+function addMaterialRowToContainer(container,typeVal,labelVal,urlVal,sc){
+  const mr=document.createElement('div');
+  mr.className='material-row';
+  const typeOpts=MAT_TYPES.map(t=>`<option value="${t.val}"${t.val===typeVal?' selected':''}>${t.label}</option>`).join('');
+  mr.innerHTML=`
+    <select class="material-type-select">${typeOpts}</select>
+    <input type="text" class="material-label-input" placeholder="Label" value="${escHtml(labelVal)}">
+    <input type="text" class="material-url-input" placeholder="https://..." value="${escHtml(urlVal)}">
+    <button type="button" class="material-remove" onclick="removeMaterial(this,${sc})">✕</button>`;
+  container.appendChild(mr);
+}
+
+function removeMaterial(btn,sc){
+  btn.closest('.material-row').remove();
+  const row=document.querySelector(`.step-row[data-sc="${sc}"]`);
+  if(row) updateNoMatHint(row,sc);
+}
+function updateNoMatHint(row,sc){
+  const hint=row.querySelector(`#no-mat-hint-${sc}`);
+  const count=row.querySelectorAll('.material-row').length;
+  if(hint) hint.style.display=count?'none':'block';
+}
+
+function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function removeStep(btn){btn.closest('.step-row').remove();renumberSteps();}
+function renumberSteps(){
+  const builder=document.getElementById('steps-builder');
+  Array.from(builder.children).forEach((row,i)=>{
+    row.querySelector('.step-num').textContent=i+1;
+    const inp=row.querySelector('.step-input');
+    if(!inp.value) inp.placeholder='Lesson '+(i+1)+' title';
+  });
+}
+
+function saveModule(){
+  const title=document.getElementById('mod-title').value.trim();
+  if(!title){alert('Please enter a module title.');return;}
+
+  const rows=document.querySelectorAll('#steps-builder .step-row');
+  const steps=Array.from(rows).map(row=>{
+    const t=row.querySelector('.step-input').value.trim();
+    const v=row.querySelector('.step-url-input').value.trim();
+    const mats=Array.from(row.querySelectorAll('.material-row')).map(mr=>{
+      const type=mr.querySelector('.material-type-select').value;
+      const label=mr.querySelector('.material-label-input').value.trim();
+      const url=mr.querySelector('.material-url-input').value.trim();
+      return url?{type,label:label||url,url}:null;
+    }).filter(Boolean);
+    return t?{title:t,video:v,materials:mats}:null;
+  }).filter(Boolean);
+
+  if(editingId){
+    const idx=modules.findIndex(m=>m.id===editingId);
+    if(idx>-1){
+      const desc=document.getElementById('mod-desc').value.trim();
+      const level=document.getElementById('mod-level').value;
+      const icon=document.getElementById('mod-icon').value;
+      const xp=parseInt(document.getElementById('mod-xp').value)||150;
+      modules[idx]={...modules[idx],title,desc:desc||modules[idx].desc,level,icon,xp,steps:steps.length?steps:[{title:'Complete this lesson',video:'',materials:[]}]};
+    }
+    saveModules();render();closeAddModal();
+    showToast('Module updated');
+    if(currentModuleId===editingId)openDetail(editingId);
+  }else{
+    const desc=document.getElementById('mod-desc').value.trim();
+    const level=document.getElementById('mod-level').value;
+    const icon=document.getElementById('mod-icon').value;
+    const xp=parseInt(document.getElementById('mod-xp').value)||150;
+    modules.push({id:Date.now(),title,desc:desc||'Complete this module.',level,icon,xp,steps:steps.length?steps:[{title:'Complete this lesson',video:'',materials:[]}]});
+    saveModules();render();closeAddModal();showToast('Module "'+title+'" added');
+  }
+}
+
+/* ─── DELETE ─── */
+function promptDelete(id){pendingDeleteId=id;document.getElementById('confirm-overlay').classList.add('open');}
+function closeConfirm(){document.getElementById('confirm-overlay').classList.remove('open');pendingDeleteId=null;}
+function confirmDeleteFromModal(){pendingDeleteId=editingId;closeAddModal();document.getElementById('confirm-overlay').classList.add('open');}
+function executeDelete(){
+  if(!pendingDeleteId)return;
+  const mod=modules.find(m=>m.id===pendingDeleteId);
+  modules=modules.filter(m=>m.id!==pendingDeleteId);delete progress[pendingDeleteId];
+  saveModules();saveProgress();render();closeConfirm();if(currentModuleId===pendingDeleteId)closeDetail();
+  showToast((mod?'"'+mod.title+'"':'Module')+' deleted');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+document.getElementById('add-modal').addEventListener('click',function(e){if(e.target===this)closeAddModal();});
+document.getElementById('confirm-overlay').addEventListener('click',function(e){if(e.target===this)closeConfirm();});
+
+
+function applyModeUI(){
+  document.body.classList.remove('admin-mode','editor-mode');
+  const role = 'admin'; // no auth — everyone has edit rights
+  if(role==='admin'){
+    document.body.classList.add('admin-mode');
+    document.getElementById('add-module-btn').style.display='flex';
+    var b=document.getElementById('access-mgmt-btn');if(b)b.style.display='none';
+  }else if(role==='editor'){
+    document.body.classList.add('editor-mode');
+    document.getElementById('add-module-btn').style.display='none';
+    var b=document.getElementById('access-mgmt-btn');if(b)b.style.display='none';
+  }else{
+    document.getElementById('add-module-btn').style.display='none';
+    var b=document.getElementById('access-mgmt-btn');if(b)b.style.display='none';
+  }
+  if(USER){
+    const ini=USER.name.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'U';
+    document.getElementById('user-avatar').textContent=ini;
+    document.getElementById('user-name').textContent=USER.name;
+  }
+}
+async function initPage(){
+  await load();
+  applyModeUI();
+  render();
+}
+initPage();
+</script>
+</body>
+</html>
