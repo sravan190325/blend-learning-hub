@@ -915,36 +915,23 @@ const DEFAULT_MODULES=[
 
 ];
 
-function load(){
+async function load(){
   try{
-    const m=localStorage.getItem(MK),p=localStorage.getItem(PK);
-    const ac=localStorage.getItem(ACK),ae=localStorage.getItem(AEK);
-    const am=localStorage.getItem(AMK),ed=localStorage.getItem(EDITOR_KEY);
-    modules=m?JSON.parse(m):JSON.parse(JSON.stringify(DEFAULT_MODULES));
-    // migrate old steps (string-only or missing materials)
+    modules=await apiFetch('/api/modules/enterprise');
     modules.forEach(mod=>{
-      mod.steps=mod.steps.map(s=>{
+      mod.steps=(mod.steps||[]).map(s=>{
         if(typeof s==='string') return{title:s,video:'',materials:[]};
         return{...s,materials:s.materials||[]};
       });
     });
-    progress=p?JSON.parse(p):{};
-    accessCodes=ac?JSON.parse(ac):[];
-    activeEmployees=ae?JSON.parse(ae):[];
-    adminMode=am==='1';
-    if(ed){const sess=JSON.parse(ed);editorMode=true;editorName=sess.name||'Editor';}
+    progress=await apiFetch('/api/progress/enterprise');
   }catch(e){modules=JSON.parse(JSON.stringify(DEFAULT_MODULES));progress={};}
 }
-function save(){
-  try{
-    localStorage.setItem(MK,JSON.stringify(modules));
-    localStorage.setItem(PK,JSON.stringify(progress));
-    localStorage.setItem(ACK,JSON.stringify(accessCodes));
-    localStorage.setItem(AEK,JSON.stringify(activeEmployees));
-    localStorage.setItem(AMK,adminMode?'1':'0');
-    if(editorMode) localStorage.setItem(EDITOR_KEY,JSON.stringify({name:editorName,ts:Date.now()}));
-    else localStorage.removeItem(EDITOR_KEY);
-  }catch(e){}
+function saveProgress(){
+  apiFetch('/api/progress/enterprise',{method:'PUT',body:JSON.stringify(progress)}).catch(()=>{});
+}
+function saveModules(){
+  apiFetch('/api/modules/enterprise',{method:'PUT',body:JSON.stringify(modules)}).catch(()=>{});
 }
 function getProgress(id){return progress[id]||{completed:false,stepsDone:[]};}
 
@@ -952,7 +939,7 @@ function getProgress(id){return progress[id]||{completed:false,stepsDone:[]};}
 function handleModePillClick(){
   // Role is set at login, mode pill is read-only indicator
 }
-function toggleAdminMode(){adminMode=!adminMode;if(adminMode)editorMode=false;save();applyModeUI();}
+function toggleAdminMode(){adminMode=!adminMode;if(adminMode)editorMode=false;applyModeUI();}
 function applyModeUI(){
   const pill=document.getElementById('mode-pill'),lbl=document.getElementById('mode-label');
   const addBtn=document.getElementById('add-module-btn'),accessBtn=document.getElementById('access-mgmt-btn');
@@ -970,7 +957,7 @@ function applyModeUI(){
     document.getElementById('user-name').textContent=USER.name;
   }
 }
-function exitEditorMode(){editorMode=false;editorName='';save();applyModeUI();render();showToast('Exited editor mode');}
+function exitEditorMode(){editorMode=false;editorName='';applyModeUI();render();showToast('Exited editor mode');}
 
 /* ─── ACCESS CODES ─── */
 function generateCode(){
@@ -980,7 +967,6 @@ function generateCode(){
   const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let code='BLN-';for(let i=0;i<4;i++) code+=chars[Math.floor(Math.random()*chars.length)];
   accessCodes.push({code,name,expiry,usesLeft:expiry===0?Infinity:expiry,createdAt:Date.now(),used:false});
-  save();
   document.getElementById('generated-code-area').innerHTML=`
     <div class="code-card">
       <div class="code-card-left">
@@ -998,7 +984,7 @@ function copyCode(code){navigator.clipboard.writeText(code).then(()=>showToast('
 function revokeCode(code){
   const idx=accessCodes.findIndex(c=>c.code===code);if(idx>-1)accessCodes[idx].revoked=true;
   activeEmployees=activeEmployees.filter(e=>e.code!==code);
-  save();renderAccessLists();showToast('Access revoked');
+  renderAccessLists();showToast('Access revoked');
 }
 function renderAccessLists(){
   const active=activeEmployees.filter(e=>!accessCodes.find(c=>c.code===e.code&&c.revoked));
@@ -1028,7 +1014,7 @@ function submitAccessCode(){
   const record={name,code:raw,activatedAt:Date.now()};
   if(existing>-1) activeEmployees[existing]=record; else activeEmployees.push(record);
   editorMode=true;editorName=name;adminMode=false;
-  save();applyModeUI();render();closeCodeEntryModal();showToast('Welcome '+name+'! Editor access granted.');
+  applyModeUI();render();closeCodeEntryModal();showToast('Welcome '+name+'! Editor access granted.');
 }
 function openAccessModal(){renderAccessLists();document.getElementById('access-modal').classList.add('open');}
 function closeAccessModal(){document.getElementById('access-modal').classList.remove('open');}
@@ -1205,7 +1191,7 @@ function toggleStep(idx){
   if(!progress[currentModuleId])progress[currentModuleId]={completed:false,stepsDone:[]};
   const arr=progress[currentModuleId].stepsDone,pos=arr.indexOf(idx);
   if(pos>-1)arr.splice(pos,1);else arr.push(idx);
-  save();openDetail(currentModuleId);render();
+  saveProgress();openDetail(currentModuleId);render();
 }
 function completeModule(){
   if(!currentModuleId)return;
@@ -1213,7 +1199,7 @@ function completeModule(){
   const mod=modules.find(m=>m.id===currentModuleId);
   progress[currentModuleId].completed=true;
   progress[currentModuleId].stepsDone=mod.steps.map((_,i)=>i);
-  save();render();openDetail(currentModuleId);
+  saveProgress();render();openDetail(currentModuleId);
   showToast('Module complete — '+mod.xp+' XP earned!');
 }
 function closeDetail(){
@@ -1377,7 +1363,7 @@ function saveModule(){
         modules[idx]={...modules[idx],title,desc:desc||modules[idx].desc,level,icon,xp,steps:steps.length?steps:[{title:'Complete this lesson',video:'',materials:[]}]};
       }
     }
-    save();render();closeAddModal();
+    saveModules();render();closeAddModal();
     showToast('Module updated'+(isEditor?' by '+editorName:''));
     if(currentModuleId===editingId)openDetail(editingId);
   }else{
@@ -1386,7 +1372,7 @@ function saveModule(){
     const icon=document.getElementById('mod-icon').value;
     const xp=parseInt(document.getElementById('mod-xp').value)||150;
     modules.push({id:Date.now(),title,desc:desc||'Complete this module.',level,icon,xp,steps:steps.length?steps:[{title:'Complete this lesson',video:'',materials:[]}]});
-    save();render();closeAddModal();showToast('Module "'+title+'" added');
+    saveModules();render();closeAddModal();showToast('Module "'+title+'" added');
   }
 }
 
@@ -1398,7 +1384,7 @@ function executeDelete(){
   if(!pendingDeleteId)return;
   const mod=modules.find(m=>m.id===pendingDeleteId);
   modules=modules.filter(m=>m.id!==pendingDeleteId);delete progress[pendingDeleteId];
-  save();render();closeConfirm();if(currentModuleId===pendingDeleteId)closeDetail();
+  saveModules();saveProgress();render();closeConfirm();if(currentModuleId===pendingDeleteId)closeDetail();
   showToast((mod?'"'+mod.title+'"':'Module')+' deleted');
 }
 
@@ -1412,7 +1398,7 @@ document.getElementById('confirm-overlay').addEventListener('click',function(e){
 document.getElementById('access-modal').addEventListener('click',function(e){if(e.target===this)closeAccessModal();});
 document.getElementById('code-entry-modal').addEventListener('click',function(e){if(e.target===this)closeCodeEntryModal();});
 
-load();applyModeUI();render();
+load().then(()=>{applyModeUI();render();});
 </script>
 </body>
 </html>
