@@ -48,27 +48,13 @@ function extractDefaultModules(htmlFile) {
 
 function seedData() {
   const forceReseed = process.env.FORCE_RESEED === '1';
-  if (fs.existsSync(DATA_FILE) && !forceReseed) {
-    // Re-seed modules from HTML on every start to pick up content updates,
-    // but preserve users, progress, and certificates.
-    try {
-      const existing = readData();
-      const freshModules = {
-        foundation: extractDefaultModules(path.join(HTML_DIR, 'foundation.html')),
-        advanced:   extractDefaultModules(path.join(HTML_DIR, 'advanced.html')),
-        enterprise: extractDefaultModules(path.join(HTML_DIR, 'enterprise.html'))
-      };
-      existing.modules = freshModules;
-      writeData(existing);
-      console.log(`Modules refreshed from HTML: ${freshModules.foundation.length} foundation, ${freshModules.advanced.length} advanced, ${freshModules.enterprise.length} enterprise.`);
-    } catch (e) {
-      console.error('Failed to refresh modules:', e.message);
-    }
-    return;
-  }
-  if (forceReseed) {
+  if (forceReseed && fs.existsSync(DATA_FILE)) {
     console.log('FORCE_RESEED=1 — wiping data.json and reseeding...');
-    if (fs.existsSync(DATA_FILE)) fs.unlinkSync(DATA_FILE);
+    fs.unlinkSync(DATA_FILE);
+  }
+  if (fs.existsSync(DATA_FILE)) {
+    console.log('data.json exists — preserving all user edits.');
+    return;
   }
   console.log('Seeding data.json from HTML files...');
   const data = {
